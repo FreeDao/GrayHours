@@ -23,7 +23,7 @@ public class DatabaseManager {
 			synchronized(DatabaseManager.class){
 				if(singleton == null){
 					singleton = new DatabaseManager();
-					singleton.databaseHelper = new DatabaseHelper(GlobalContext.getInstanse());
+					singleton.databaseHelper = new DatabaseHelper(GlobalContext.getInstance());
 					singleton.database = singleton.databaseHelper.getWritableDatabase();
 				}
 			}
@@ -57,6 +57,7 @@ public class DatabaseManager {
 
 			list.add(taskBean);
 		}
+		cursor.close();
 		return list;
 	}
 

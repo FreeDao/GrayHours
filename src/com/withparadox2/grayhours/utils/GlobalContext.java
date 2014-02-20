@@ -14,7 +14,7 @@ public class GlobalContext extends Application{
 		globalContext = this;
 	}
 
-	public static GlobalContext getInstanse(){
+	public static GlobalContext getInstance(){
 		return globalContext;
 	}
 }
