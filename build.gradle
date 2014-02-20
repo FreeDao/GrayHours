@@ -1,0 +1,48 @@
+buildscript {
+
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.3+'
+    }
+}
+
+apply plugin: 'android'
+dependencies {
+}
+
+android {
+
+    buildToolsVersion "19.0.1"
+    compileSdkVersion 14
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 14
+    }
+
+    target = 'android-14'
+    sourceSets {
+        main {
+            manifest {
+                srcFile 'AndroidManifest.xml'
+            }
+            java {
+                srcDir 'src'
+            }
+            res {
+                srcDir 'res'
+            }
+            assets {
+                srcDir 'assets'
+            }
+            resources {
+                srcDir 'src'
+            }
+
+        }
+    }
+}
