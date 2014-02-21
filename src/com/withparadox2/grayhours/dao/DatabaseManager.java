@@ -1,8 +1,8 @@
 package com.withparadox2.grayhours.dao;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.ListView;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.utils.GlobalContext;
 
@@ -61,5 +61,54 @@ public class DatabaseManager {
 		return list;
 	}
 
+	public void addTask(String name, String startTime){
+		ContentValues values = new ContentValues();
+		values.put(TaskTable.KEY_NAME, name);
+		values.put(TaskTable.KEY_START_TIME, startTime);
+		values.put(TaskTable.KEY_TOTAL_TIME, "0");
+		database.insert(TaskTable.TABLE_NAME, null, values);
+	}
 
+	public void updateTotalTimeInTaskTable(long id, String time){
+		ContentValues values = new ContentValues();
+		values.put(TaskTable.KEY_TOTAL_TIME, time);
+		database.update(TaskTable.TABLE_NAME, values, TaskTable.KEY_ID + "=" + id, null);
+	}
+
+	public List<TaskBean> getWorkList(){
+		String sql = "select * from " + TaskTable.TABLE_NAME;
+		Cursor cursor = database.rawQuery(sql, null);
+		List<TaskBean> list = new ArrayList<TaskBean>();
+		while (cursor.moveToNext()){
+			TaskBean taskBean = new TaskBean();
+			int columnIndex = cursor.getColumnIndex(TaskTable.KEY_ID);
+			taskBean.setId(cursor.getLong(columnIndex));
+
+			columnIndex = cursor.getColumnIndex(TaskTable.KEY_NAME);
+			taskBean.setName(cursor.getString(columnIndex));
+
+			columnIndex = cursor.getColumnIndex(TaskTable.KEY_START_TIME);
+			taskBean.setStartTime(cursor.getString(columnIndex));
+
+			columnIndex = cursor.getColumnIndex(TaskTable.KEY_TOTAL_TIME);
+			taskBean.setTotalTime(cursor.getString(columnIndex));
+
+			list.add(taskBean);
+		}
+		cursor.close();
+		return list;
+	}
+
+	public void addWork(int tableIndex, String date){
+		ContentValues values = new ContentValues();
+		values.put(WorkTable.KEY_DATE, date);
+		values.put(WorkTable.KEY_TOTAL_TIME_A_DAY, "0");
+		database.insert(WorkTable.getWorkTableName(tableIndex), null, values);
+	}
+
+	public void updateTotalTimeInWorkTable(int tableIndex, long id, String time){
+		ContentValues values = new ContentValues();
+		values.put(WorkTable.KEY_TOTAL_TIME_A_DAY, time);
+		database.update(WorkTable.getWorkTableName(tableIndex), values, WorkTable.KEY_ID + " = " + id, null);
+	}
 }

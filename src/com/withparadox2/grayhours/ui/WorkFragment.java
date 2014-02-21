@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,7 @@ public class WorkFragment extends BaseFragment{
 
 		@Override
 		public void handleMessage(Message msg) {
-
+			timeText = Integer.toString(msg.arg1);
 		}
 
 		private Message getMessage(){
@@ -68,10 +69,5 @@ public class WorkFragment extends BaseFragment{
 			getMessage().sendToTarget();
 		}
 	}
-
-
-
-
-
 
 }

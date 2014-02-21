@@ -26,5 +26,8 @@ public class Util {
 			GlobalContext.getInstance().getResources().getDisplayMetrics());
 	}
 
+	public static String getTodayString(){
+		return null;
+	}
 
 }
