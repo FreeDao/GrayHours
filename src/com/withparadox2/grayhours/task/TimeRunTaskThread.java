@@ -1,5 +1,6 @@
 package com.withparadox2.grayhours.task;
 
+import android.util.Log;
 import com.withparadox2.grayhours.ui.WorkFragment;
 
 /**
@@ -20,6 +21,7 @@ public class TimeRunTaskThread extends Thread{
 		while (!stopFlag){
 			time ++;
 			handler.sendMessageToTarget(time);
+			Log.d("===", ""+time);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -29,10 +31,7 @@ public class TimeRunTaskThread extends Thread{
 	}
 
 	public void stopThread(){
-		stopFlag = true;
-	}
-
-	public boolean isRunning(){
-		return !stopFlag;
+		if(this.isAlive())
+			stopFlag = true;
 	}
 }

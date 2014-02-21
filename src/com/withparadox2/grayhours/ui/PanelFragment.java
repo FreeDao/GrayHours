@@ -1,11 +1,16 @@
 package com.withparadox2.grayhours.ui;
 
-import android.app.Fragment;
+import android.app.*;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TableRow;
+import android.widget.Toast;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
@@ -19,30 +24,122 @@ import java.util.List;
  */
 public class PanelFragment extends BaseFragment{
 	private List<TaskBean> taskBeanList;
+	private View root;
 
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.panelfragment_layout, container, false);
+		root = inflater.inflate(R.layout.panelfragment_layout, container, false);
+		buildView(root);
+		return root;
+	}
+
+
+	private void updateList(){
 		taskBeanList = DatabaseManager.getInstanse().getTaskList();
-		buildView(view);
-		return view;
 	}
 
 	private void buildView(View root){
+		updateList();
 		TableRow row1 = (TableRow) root.findViewById(R.id.first_row_id);
 		TableRow row2 = (TableRow) root.findViewById(R.id.second_row_id);
+		row1.removeAllViews();
+		row2.removeAllViews();
 		switch (taskBeanList.size()){
 			case 0:
-				return;
+				setAddTaskButtonView(row1);
+				break;
 			case 1:
-				TaskButton taskButton = new TaskButton(getActivity());
-				AddTaskButton addTaskButton = new AddTaskButton(getActivity());
-				row1.addView(taskButton);
-				row1.addView(addTaskButton);
+				setTaskButtonView(row1, 0);
+				setAddTaskButtonView(row1);
+				break;
+			case 2:
+				setTaskButtonView(row1, 0);
+				setTaskButtonView(row1, 1);
+				setAddTaskButtonView(row2);
+				break;
+			case 3:
+				setTaskButtonView(row1, 0);
+				setTaskButtonView(row1, 1);
+				setTaskButtonView(row2, 2);
+				setAddTaskButtonView(row2);
+				break;
+			case 4:
+				setTaskButtonView(row1, 0);
+				setTaskButtonView(row1, 1);
+				setTaskButtonView(row2, 2);
+				setTaskButtonView(row2, 3);
 				break;
 
 		}
 
 	}
+
+	private void setAddTaskButtonView(TableRow row){
+		AddTaskButton addTaskButton = new AddTaskButton(getActivity());
+		addTaskButton.setOnClickListener(new AddOnClickListener());
+		addTaskButton.setText("add");
+		row.addView(addTaskButton);
+	}
+
+	private void setTaskButtonView(TableRow row, int index){
+		TaskButton taskButton = new TaskButton(getActivity());
+		taskButton.setTag(index);
+		taskButton.setOnClickListener(new StratWorkOnClickListener());
+		taskButton.setText(taskBeanList.get(index).getName());
+		row.addView(taskButton);
+	}
+
+	private class AddOnClickListener implements View.OnClickListener{
+
+		@Override
+		public void onClick(View v) {
+
+			AddDialogFragment dialogFragment =
+				(AddDialogFragment) getFragmentManager().findFragmentByTag(AddDialogFragment.class.getName());
+			if (dialogFragment == null)
+				dialogFragment = new AddDialogFragment();
+			dialogFragment.show(getFragmentManager(), AddDialogFragment.class.getName());
+		}
+	}
+
+	private class StratWorkOnClickListener implements View.OnClickListener{
+
+		@Override
+		public void onClick(View v) {
+			startWorkClick((Integer) v.getTag());
+			Toast.makeText(getActivity(), "dianjile", Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	private void startWorkClick(int index){
+		Fragment fragment = new WorkFragment(index);
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.addToBackStack(null);
+		transaction.replace(android.R.id.content, fragment);
+		transaction.commit();
+	}
+
+	private class AddDialogFragment extends DialogFragment{
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			final EditText editText = new EditText(getActivity());
+
+			AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+				.setView(editText)
+				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if (!TextUtils.isEmpty(editText.getText())) {
+							DatabaseManager.getInstanse().addTask(editText.getText().toString(), "today");
+							buildView(root);
+						}
+					}
+				})
+				.setNegativeButton("取消", null)
+				.create();
+			return alertDialog;
+		}
+	}
+
 }

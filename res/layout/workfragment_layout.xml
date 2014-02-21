@@ -4,9 +4,16 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-	<Button
+	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:textSize="30sp"
+		android:id="@+id/time_text"/>
+	<Button
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
 		android:id="@+id/start_button"/>
 
 </LinearLayout>
