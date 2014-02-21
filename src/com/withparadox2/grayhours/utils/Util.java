@@ -5,6 +5,9 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * Created by withparadox2 on 14-2-20.
  */
@@ -26,8 +29,10 @@ public class Util {
 			GlobalContext.getInstance().getResources().getDisplayMetrics());
 	}
 
-	public static String getTodayString(){
-		return null;
+	public static String getCurrentDate(){
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+		return simpleDateFormat.format(calendar.getTime());
 	}
 
 }

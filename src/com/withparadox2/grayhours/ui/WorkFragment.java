@@ -12,7 +12,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import com.withparadox2.grayhours.R;
+import com.withparadox2.grayhours.bean.TaskBean;
+import com.withparadox2.grayhours.dao.DatabaseManager;
 import com.withparadox2.grayhours.task.TimeRunTaskThread;
+import com.withparadox2.grayhours.utils.Util;
 
 
 /**
@@ -23,10 +26,10 @@ public class WorkFragment extends BaseFragment{
 	private TextView timeTextView;
 	private SetTimeTextHandler handler;
 	private TimeRunTaskThread timeRunTaskThread;
-	private int index;
+	private TaskBean taskBean;
 
-	public WorkFragment(int index){
-		this.index = index;
+	public WorkFragment(TaskBean taskBean){
+		this.taskBean = taskBean;
 	}
 
 
@@ -92,6 +95,10 @@ public class WorkFragment extends BaseFragment{
 	private void updateTimeTextView(int time){
 
 		timeTextView.setText(String.valueOf(time));
+	}
+
+	private void saveTimeToDb(int time){
+		DatabaseManager.getInstanse().addWork(taskBean.getIndex(), Util.getCurrentDate(), String.valueOf(time));
 	}
 
 }

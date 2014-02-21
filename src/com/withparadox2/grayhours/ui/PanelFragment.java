@@ -20,7 +20,7 @@ import com.withparadox2.grayhours.ui.custom.TaskButton;
 import java.util.List;
 
 /**
- * Created by Administrator on 14-2-20.
+ * Created by withparadox2 on 14-2-20.
  */
 public class PanelFragment extends BaseFragment{
 	private List<TaskBean> taskBeanList;
@@ -113,7 +113,10 @@ public class PanelFragment extends BaseFragment{
 	}
 
 	private void startWorkClick(int index){
-		Fragment fragment = new WorkFragment(index);
+		TaskBean taskBean = taskBeanList.get(index);
+		taskBean.setIndex(index);
+		DatabaseManager.getInstanse().creatWorkTableByIndex(index);
+		Fragment fragment = new WorkFragment(taskBean);
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.addToBackStack(null);
 		transaction.replace(android.R.id.content, fragment);

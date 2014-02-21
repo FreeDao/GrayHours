@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.withparadox2.grayhours.bean.TaskBean;
+import com.withparadox2.grayhours.bean.WorkBean;
 import com.withparadox2.grayhours.utils.GlobalContext;
+import com.withparadox2.grayhours.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,11 +101,22 @@ public class DatabaseManager {
 		return list;
 	}
 
-	public void addWork(int tableIndex, String date){
+	public void addWork(int tableIndex, String date, String totalTime){
 		ContentValues values = new ContentValues();
 		values.put(WorkTable.KEY_DATE, date);
-		values.put(WorkTable.KEY_TOTAL_TIME_A_DAY, "0");
+		values.put(WorkTable.KEY_TOTAL_TIME_A_DAY, date);
+		values.put(WorkTable.KEY_TOTAL_TIME_A_DAY, totalTime);
 		database.insert(WorkTable.getWorkTableName(tableIndex), null, values);
+	}
+
+	public void addOrUpdateWork(int tableIndex, String date, String totalTime){
+		WorkBean workBean = getLastWorkBeanItem(tableIndex);
+		if (workBean != null && workBean.getDate().equals(date)){
+			int temp = Integer.parseInt(totalTime) + Integer.parseInt(workBean.getTotalTime());
+			updateTotalTimeInWorkTable(tableIndex, workBean.getId(), String.valueOf(temp));
+		} else {
+
+		}
 	}
 
 	public void updateTotalTimeInWorkTable(int tableIndex, long id, String time){
@@ -111,4 +124,31 @@ public class DatabaseManager {
 		values.put(WorkTable.KEY_TOTAL_TIME_A_DAY, time);
 		database.update(WorkTable.getWorkTableName(tableIndex), values, WorkTable.KEY_ID + " = " + id, null);
 	}
+
+	private WorkBean getLastWorkBeanItem(int tableIndex){
+		String sql = "select * from " + WorkTable.getWorkTableName(tableIndex);
+		Cursor cursor = database.rawQuery(sql, null);
+		WorkBean workBean;
+		if (cursor.moveToLast()){
+			workBean = new WorkBean();
+			int columnIndex = cursor.getColumnIndex(WorkTable.KEY_ID);
+			workBean.setId(cursor.getLong(columnIndex));
+
+			columnIndex = cursor.getColumnIndex(WorkTable.KEY_DATE);
+			workBean.setDate(cursor.getString(columnIndex));
+
+			columnIndex = cursor.getColumnIndex(WorkTable.KEY_TOTAL_TIME_A_DAY);
+			workBean.setTotalTime(cursor.getString(columnIndex));
+			cursor.close();
+			return workBean;
+		}
+		cursor.close();
+		return null;
+	}
+	public void creatWorkTableByIndex(int index){
+		String sql = WorkTable.getCreatTableSql(index);
+		database.execSQL(sql);
+	}
+
+
 }
