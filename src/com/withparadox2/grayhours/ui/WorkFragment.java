@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +63,7 @@ public class WorkFragment extends BaseFragment{
 				timeRunTaskThread.start();
 			} else {
 				timeRunTaskThread.stopThread();
+				saveTimeToDb(timeTextView.getText().toString());
 			}
 		}
 	}
@@ -97,8 +96,8 @@ public class WorkFragment extends BaseFragment{
 		timeTextView.setText(String.valueOf(time));
 	}
 
-	private void saveTimeToDb(int time){
-		DatabaseManager.getInstanse().addWork(taskBean.getIndex(), Util.getCurrentDate(), String.valueOf(time));
+	private void saveTimeToDb(String time){
+		DatabaseManager.getInstanse().addOrUpdateWork(taskBean.getIndex(), Util.getCurrentDate(), time);
 	}
 
 }

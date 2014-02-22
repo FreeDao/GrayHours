@@ -101,7 +101,7 @@ public class DatabaseManager {
 		return list;
 	}
 
-	public void addWork(int tableIndex, String date, String totalTime){
+	private void addWork(int tableIndex, String date, String totalTime){
 		ContentValues values = new ContentValues();
 		values.put(WorkTable.KEY_DATE, date);
 		values.put(WorkTable.KEY_TOTAL_TIME_A_DAY, date);
@@ -115,7 +115,7 @@ public class DatabaseManager {
 			int temp = Integer.parseInt(totalTime) + Integer.parseInt(workBean.getTotalTime());
 			updateTotalTimeInWorkTable(tableIndex, workBean.getId(), String.valueOf(temp));
 		} else {
-
+			addWork(tableIndex, Util.getCurrentDate(), totalTime);
 		}
 	}
 
