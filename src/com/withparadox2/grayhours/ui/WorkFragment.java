@@ -72,7 +72,7 @@ public class WorkFragment extends BaseFragment{
 				startButton.setText("结束");
 			} else {
 				timeRunTaskThread.stopThread();
-				saveTimeToDb(timeTextView.getText().toString());
+				saveTimeToDb(timeTextView.getTag().toString());
 				updateTimeTextView(0);
 				startButton.setText("开始");
 			}
@@ -105,6 +105,7 @@ public class WorkFragment extends BaseFragment{
 	private void updateTimeTextView(int time){
 
 		timeTextView.setText(Util.convertSecondsToMinuteHourString(time));
+		timeTextView.setTag(time);
 	}
 
 	private void saveTimeToDb(String time){

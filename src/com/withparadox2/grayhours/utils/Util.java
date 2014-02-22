@@ -53,6 +53,10 @@ public class Util {
 		return num < 10 ? "0" + num : String.valueOf(num);
 	}
 
+	public static String convertSecondsToHours(int seconds){
+		return String.valueOf(seconds/60/60);
+	}
+
 
 
 }
