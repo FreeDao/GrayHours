@@ -16,6 +16,7 @@ public class MainActivity extends Activity {
 		actionBar = getActionBar();
 		actionBar.setTitle(getString(R.string.app_name));
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		actionBar.setIcon(android.R.color.transparent);
 		getFragmentManager()
 				.beginTransaction()
 				.replace(android.R.id.content, new PanelFragment())

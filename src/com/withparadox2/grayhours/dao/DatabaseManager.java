@@ -71,9 +71,11 @@ public class DatabaseManager {
 		database.insert(TaskTable.TABLE_NAME, null, values);
 	}
 
-	public void updateTotalTimeInTaskTable(long id, String time){
+	public void updateTotalTimeInTaskTable(TaskBean taskBean, String time){
+		long id = taskBean.getId();
+		int temp = Integer.parseInt(time) + Integer.parseInt(taskBean.getTotalTime());
 		ContentValues values = new ContentValues();
-		values.put(TaskTable.KEY_TOTAL_TIME, time);
+		values.put(TaskTable.KEY_TOTAL_TIME, String.valueOf(temp));
 		database.update(TaskTable.TABLE_NAME, values, TaskTable.KEY_ID + "=" + id, null);
 	}
 
@@ -101,10 +103,9 @@ public class DatabaseManager {
 		return list;
 	}
 
-	public void addWork(int tableIndex, String date, String totalTime){
+	private void addWork(int tableIndex, String date, String totalTime){
 		ContentValues values = new ContentValues();
 		values.put(WorkTable.KEY_DATE, date);
-		values.put(WorkTable.KEY_TOTAL_TIME_A_DAY, date);
 		values.put(WorkTable.KEY_TOTAL_TIME_A_DAY, totalTime);
 		database.insert(WorkTable.getWorkTableName(tableIndex), null, values);
 	}
@@ -115,7 +116,7 @@ public class DatabaseManager {
 			int temp = Integer.parseInt(totalTime) + Integer.parseInt(workBean.getTotalTime());
 			updateTotalTimeInWorkTable(tableIndex, workBean.getId(), String.valueOf(temp));
 		} else {
-
+			addWork(tableIndex, date, totalTime);
 		}
 	}
 
@@ -145,10 +146,12 @@ public class DatabaseManager {
 		cursor.close();
 		return null;
 	}
+
 	public void creatWorkTableByIndex(int index){
 		String sql = WorkTable.getCreatTableSql(index);
 		database.execSQL(sql);
 	}
+
 
 
 }
