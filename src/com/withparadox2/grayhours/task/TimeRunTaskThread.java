@@ -21,7 +21,6 @@ public class TimeRunTaskThread extends Thread{
 		while (!stopFlag){
 			time ++;
 			handler.sendMessageToTarget(time);
-			Log.d("===", ""+time);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

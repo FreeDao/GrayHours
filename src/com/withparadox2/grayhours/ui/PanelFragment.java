@@ -34,6 +34,11 @@ public class PanelFragment extends BaseFragment{
 		return root;
 	}
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+	}
 
 	private void updateList(){
 		taskBeanList = DatabaseManager.getInstanse().getTaskList();
@@ -108,7 +113,6 @@ public class PanelFragment extends BaseFragment{
 		@Override
 		public void onClick(View v) {
 			startWorkClick((Integer) v.getTag());
-			Toast.makeText(getActivity(), "dianjile", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -129,6 +133,7 @@ public class PanelFragment extends BaseFragment{
 			final EditText editText = new EditText(getActivity());
 
 			AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+				.setTitle("Are you sure?")
 				.setView(editText)
 				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 					@Override

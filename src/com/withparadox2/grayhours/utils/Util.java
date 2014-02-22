@@ -35,4 +35,28 @@ public class Util {
 		return simpleDateFormat.format(calendar.getTime());
 	}
 
+	public static String convertSecondsToMinuteHourString(int time){
+		StringBuilder formatTimeStringBuilder = new StringBuilder();
+		int seconds = time % 60;
+		int minutes = time / 60;
+		int hours = minutes / 60;
+		minutes = minutes % 60;
+		formatTimeStringBuilder.append(formatNumLessThanTen(hours))
+				.append(":")
+				.append(formatNumLessThanTen(minutes))
+				.append(":")
+				.append(formatNumLessThanTen(seconds));
+		return formatTimeStringBuilder.toString();
+	}
+
+	public static String formatNumLessThanTen(int num){
+		return num < 10 ? "0" + num : String.valueOf(num);
+	}
+
+	public static String convertSecondsToHours(int seconds){
+		return String.valueOf(seconds/60/60);
+	}
+
+
+
 }

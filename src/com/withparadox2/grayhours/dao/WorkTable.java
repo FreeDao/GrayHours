@@ -16,7 +16,7 @@ public class WorkTable {
 				+ "("
 				+ KEY_ID + " integer primary key autoincrement,"
 				+ KEY_DATE + " text,"
-				+ KEY_TOTAL_TIME_A_DAY + "text"
+				+ KEY_TOTAL_TIME_A_DAY + " text"
 				+ ");";
 	}
 }
