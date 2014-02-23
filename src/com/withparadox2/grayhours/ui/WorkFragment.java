@@ -36,7 +36,7 @@ public class WorkFragment extends BaseFragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.workfragment_layout, container, false);
-		TextView tastText = (TextView) v.findViewById(R.id.task_text);
+		TextView tastText = (TextView) v.findViewById(R.id.task_name_text);
 		tastText.setText(taskBean.getName());
 		startButton = (Button) v.findViewById(R.id.start_button);
 		startButton.setOnClickListener(new OnStartButtonClickListener());
