@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
+import com.withparadox2.grayhours.support.BaseHandler;
 import com.withparadox2.grayhours.task.TimeRunTaskThread;
 import com.withparadox2.grayhours.utils.Util;
 
@@ -77,7 +78,7 @@ public class WorkFragment extends BaseFragment{
 		}
 	}
 
-	public class SetTimeTextHandler extends Handler{
+	public class SetTimeTextHandler extends BaseHandler{
 
 		public SetTimeTextHandler(Looper looper) {
 			super(looper);
@@ -88,16 +89,7 @@ public class WorkFragment extends BaseFragment{
 			updateTimeTextView(msg.arg1);
 		}
 
-		private Message getMessage(){
-			return this.obtainMessage();
-		}
 
-		public void sendMessageToTarget(int time){
-			Message message = getMessage();
-			message.arg1 = time;
-			message.sendToTarget();
-
-		}
 	}
 
 	private void updateTimeTextView(int time){

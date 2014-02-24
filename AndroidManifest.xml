@@ -15,6 +15,7 @@
 			           android:name="android.appwidget.provider"/>
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+				<action android:name="com.withparadox2.grayhours.START_BUTTON_CLICK_ACTION"/>
 			</intent-filter>
 		</receiver>
 
@@ -26,5 +27,9 @@
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
+		<service android:name=".ui.UpdateWidgetService">
+
+		</service>
+
 	</application>
 </manifest>
