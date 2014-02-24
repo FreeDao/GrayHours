@@ -16,6 +16,7 @@
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
 				<action android:name="com.withparadox2.grayhours.START_BUTTON_CLICK_ACTION"/>
+				<action android:name="com.withparadox2.grayhours.SEND_BROADCAST_ACTION"/>
 			</intent-filter>
 		</receiver>
 

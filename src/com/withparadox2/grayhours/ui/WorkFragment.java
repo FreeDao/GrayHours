@@ -1,5 +1,9 @@
 package com.withparadox2.grayhours.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,9 +29,8 @@ public class WorkFragment extends BaseFragment{
 
 	private TextView timeTextView;
 	private Button startButton;
-	private SetTimeTextHandler handler;
-	private TimeRunTaskThread timeRunTaskThread;
 	private TaskBean taskBean;
+	private BroadcastReceiver broadcastReceiver;
 
 	public WorkFragment(TaskBean taskBean){
 		this.taskBean = taskBean;
@@ -50,47 +53,39 @@ public class WorkFragment extends BaseFragment{
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-		handler = new SetTimeTextHandler(Looper.myLooper());
+		getActivity().registerReceiver(broadcastReceiver, new IntentFilter(UpdateWidgetService.UPDATE_TIME_BROADCAST));
+		broadcastReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				updateTimeTextView(intent.getIntExtra(UpdateWidgetService.KEY_TIME, 0));
+			}
+		};
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if(timeRunTaskThread != null){
-			timeRunTaskThread.stopThread();
-		}
 
 	}
 
 	private class OnStartButtonClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-			if(timeRunTaskThread == null || !timeRunTaskThread.isAlive()){
-				timeRunTaskThread = new TimeRunTaskThread(handler);
-				timeRunTaskThread.start();
-				startButton.setText("结束");
-			} else {
-				timeRunTaskThread.stopThread();
-				saveTimeToDb(timeTextView.getTag().toString());
-				updateTimeTextView(0);
-				startButton.setText("开始");
-			}
+			Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
+			getActivity().startService(i);
+//			if(timeRunTaskThread == null || !timeRunTaskThread.isAlive()){
+//				timeRunTaskThread = new TimeRunTaskThread(handler);
+//				timeRunTaskThread.start();
+//				startButton.setText("结束");
+//			} else {
+//				timeRunTaskThread.stopThread();
+//				saveTimeToDb(timeTextView.getTag().toString());
+//				updateTimeTextView(0);
+//				startButton.setText("开始");
+//			}
 		}
 	}
 
-	public class SetTimeTextHandler extends BaseHandler{
-
-		public SetTimeTextHandler(Looper looper) {
-			super(looper);
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			updateTimeTextView(msg.arg1);
-		}
-
-
-	}
 
 	private void updateTimeTextView(int time){
 
