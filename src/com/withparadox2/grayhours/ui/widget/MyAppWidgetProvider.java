@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 import com.withparadox2.grayhours.R;
+import com.withparadox2.grayhours.ui.UpdateWidgetService;
 
 /**
  * Created by withparadox2 on 14-2-23.
@@ -16,6 +17,7 @@ import com.withparadox2.grayhours.R;
 public class MyAppWidgetProvider extends AppWidgetProvider{
 
 	public static final String START_BUTTON_CLICK_ACTION = "com.withparadox2.grayhours.START_BUTTON_CLICK_ACTION";
+	private boolean TimerIsStopFlag = true;
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		Intent intent = new Intent().setAction(START_BUTTON_CLICK_ACTION);
@@ -33,10 +35,10 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals(START_BUTTON_CLICK_ACTION)){
-			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout);
-			remoteViews.setTextViewText(R.id.task_name_text, "Hello World++!");
-			Toast.makeText(context, "Click Button", Toast.LENGTH_SHORT).show();
-			AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, MyAppWidgetProvider.class), remoteViews);
+			if(TimerIsStopFlag){
+				Intent i = new Intent().setClass(context, UpdateWidgetService.class);
+				context.startService(i);
+			}
 		}
 		super.onReceive(context, intent);
 	}
