@@ -22,3 +22,4 @@ obj
 tmp
 
 .DS_Store
+.gradle

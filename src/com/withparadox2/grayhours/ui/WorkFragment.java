@@ -1,9 +1,14 @@
 package com.withparadox2.grayhours.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +18,9 @@ import android.widget.TextView;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
+import com.withparadox2.grayhours.support.BaseHandler;
 import com.withparadox2.grayhours.task.TimeRunTaskThread;
+import com.withparadox2.grayhours.utils.CustomAction;
 import com.withparadox2.grayhours.utils.Util;
 
 
@@ -24,9 +31,8 @@ public class WorkFragment extends BaseFragment{
 
 	private TextView timeTextView;
 	private Button startButton;
-	private SetTimeTextHandler handler;
-	private TimeRunTaskThread timeRunTaskThread;
 	private TaskBean taskBean;
+	private BroadcastReceiver broadcastReceiver;
 
 	public WorkFragment(TaskBean taskBean){
 		this.taskBean = taskBean;
@@ -41,6 +47,11 @@ public class WorkFragment extends BaseFragment{
 		startButton = (Button) v.findViewById(R.id.start_button);
 		startButton.setOnClickListener(new OnStartButtonClickListener());
 		timeTextView = (TextView) v.findViewById(R.id.time_text);
+		if(UpdateWidgetService.START_FLAG){
+			startButton.setText("结束");
+		} else {
+			startButton.setText("开始");
+		}
 		updateTimeTextView(0);
 		return v;
 	}
@@ -49,56 +60,50 @@ public class WorkFragment extends BaseFragment{
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-		handler = new SetTimeTextHandler(Looper.myLooper());
+
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(CustomAction.START_TASK_ACTION);
+		intentFilter.addAction(CustomAction.END_TASK_ACTION);
+		intentFilter.addAction(CustomAction.SEND_TIME_ACTION);
+		broadcastReceiver = new MyBroadcastReceiver();
+		getActivity().registerReceiver(broadcastReceiver, intentFilter);
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if(timeRunTaskThread != null){
-			timeRunTaskThread.stopThread();
-		}
 
 	}
 
 	private class OnStartButtonClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-			if(timeRunTaskThread == null || !timeRunTaskThread.isAlive()){
-				timeRunTaskThread = new TimeRunTaskThread(handler);
-				timeRunTaskThread.start();
-				startButton.setText("结束");
+			if(!UpdateWidgetService.START_FLAG){
+				Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
+				getActivity().startService(i);
 			} else {
-				timeRunTaskThread.stopThread();
-				saveTimeToDb(timeTextView.getTag().toString());
-				updateTimeTextView(0);
-				startButton.setText("开始");
+				Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
+				getActivity().stopService(i);
 			}
+			UpdateWidgetService.START_FLAG = !UpdateWidgetService.START_FLAG;
+//			if(timeRunTaskThread == null || !timeRunTaskThread.isAlive()){
+//				timeRunTaskThread = new TimeRunTaskThread(handler);
+//				timeRunTaskThread.start();
+//				startButton.setText("结束");
+//			} else {
+//				timeRunTaskThread.stopThread();
+//				saveTimeToDb(timeTextView.getTag().toString());
+//				updateTimeTextView(0);
+//				startButton.setText("开始");
+//			}
 		}
 	}
 
-	public class SetTimeTextHandler extends Handler{
-
-		public SetTimeTextHandler(Looper looper) {
-			super(looper);
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			updateTimeTextView(msg.arg1);
-		}
-
-		private Message getMessage(){
-			return this.obtainMessage();
-		}
-
-		public void sendMessageToTarget(int time){
-			Message message = getMessage();
-			message.arg1 = time;
-			message.sendToTarget();
-
-		}
-	}
 
 	private void updateTimeTextView(int time){
 
@@ -108,6 +113,22 @@ public class WorkFragment extends BaseFragment{
 
 	private void saveTimeToDb(String time){
 		DatabaseManager.getInstanse().updateTotalTimeInTaskTable(taskBean, time);
+	}
+
+	private class MyBroadcastReceiver extends BroadcastReceiver{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d("++++++++++", intent.getAction());
+			String action = intent.getAction();
+			if (action.equals(CustomAction.START_TASK_ACTION)){
+				startButton.setText("结束");
+			} else if (action.equals(CustomAction.END_TASK_ACTION)){
+				startButton.setText("开始");
+			} else if (action.equals(CustomAction.SEND_TIME_ACTION)){
+				timeTextView.setText(Util.convertSecondsToMinuteHourString(intent.getIntExtra(UpdateWidgetService.KEY_TIME, 0)));
+			}
+		}
 	}
 
 	@Override
