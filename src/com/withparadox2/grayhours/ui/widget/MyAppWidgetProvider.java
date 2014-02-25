@@ -3,8 +3,10 @@ package com.withparadox2.grayhours.ui.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 import com.withparadox2.grayhours.R;
@@ -36,7 +38,7 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout);
 			remoteViews.setTextViewText(R.id.task_name_text, "Hello World++!");
 			Toast.makeText(context, "Click Button", Toast.LENGTH_SHORT).show();
-
+			AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, MyAppWidgetProvider.class), remoteViews);
 		}
 		super.onReceive(context, intent);
 	}
