@@ -21,11 +21,13 @@ import java.util.List;
 public class TaskListActivity extends Activity{
 	private ListView listView;
 	private List<TaskBean> list = DatabaseManager.getInstanse().getTaskList();
+	private Activity that;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		listView = new ListView(this);
+		that = this;
 
 		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getList()));
 		setContentView(listView);
@@ -35,6 +37,7 @@ public class TaskListActivity extends Activity{
 				Intent i = new Intent(getApplicationContext(), UpdateWidgetService.class);
 				UpdateWidgetService.setTaskBean(list.get(position));
 				getApplicationContext().startService(i);
+				that.finish();
 			}
 		});
 	}

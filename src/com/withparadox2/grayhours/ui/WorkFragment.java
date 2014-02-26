@@ -37,6 +37,8 @@ public class WorkFragment extends BaseFragment{
 	public WorkFragment(TaskBean taskBean){
 		this.taskBean = taskBean;
 		UpdateWidgetService.setTaskBean(taskBean);
+		Log.d("ttttttttttttttt", ""+UpdateWidgetService.START_FLAG + "== WorkFragment");
+
 	}
 
 
@@ -48,9 +50,14 @@ public class WorkFragment extends BaseFragment{
 		startButton = (Button) v.findViewById(R.id.start_button);
 		startButton.setOnClickListener(new OnStartButtonClickListener());
 		timeTextView = (TextView) v.findViewById(R.id.time_text);
-		if(UpdateWidgetService.START_FLAG){
+		Log.d("ttttttttttttttt", ""+UpdateWidgetService.START_FLAG + "== onCreatView");
+
+		if(UpdateWidgetService.isMyServiceRunning(getActivity())){
+			Log.d("============", "onCreatView show eend");
 			startButton.setText("结束");
 		} else {
+			Log.d("============", "onCreatView show start");
+
 			startButton.setText("开始");
 		}
 		updateTimeTextView(0);
@@ -84,14 +91,13 @@ public class WorkFragment extends BaseFragment{
 	private class OnStartButtonClickListener implements View.OnClickListener {
 		@Override
 		public void onClick(View v) {
-			if(!UpdateWidgetService.START_FLAG){
+			if(!UpdateWidgetService.isMyServiceRunning(getActivity())){
 				Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
 				getActivity().startService(i);
 			} else {
 				Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
 				getActivity().stopService(i);
 			}
-			UpdateWidgetService.START_FLAG = !UpdateWidgetService.START_FLAG;
 		}
 	}
 
@@ -108,7 +114,6 @@ public class WorkFragment extends BaseFragment{
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d("++++++++++", intent.getAction());
 			String action = intent.getAction();
 			if (action.equals(CustomAction.START_TASK_ACTION)){
 				startButton.setText("结束");
@@ -134,9 +139,13 @@ public class WorkFragment extends BaseFragment{
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		getFragmentManager()
-			.beginTransaction()
-			.replace(android.R.id.content, new PanelFragment())
-			.commit();
+		stopService();
+	}
+
+	
+
+	private void stopService(){
+		Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
+		getActivity().stopService(i);
 	}
 }
