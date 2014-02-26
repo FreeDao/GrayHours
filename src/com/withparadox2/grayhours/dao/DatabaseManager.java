@@ -43,6 +43,7 @@ public class DatabaseManager {
 		String sql = "select * from " + TaskTable.TABLE_NAME;
 		Cursor cursor = database.rawQuery(sql, null);
 		List<TaskBean> list = new ArrayList<TaskBean>();
+		int index = 0;
 		while (cursor.moveToNext()){
 			TaskBean taskBean = new TaskBean();
 			int columnIndex = cursor.getColumnIndex(TaskTable.KEY_ID);
@@ -57,6 +58,8 @@ public class DatabaseManager {
 			columnIndex = cursor.getColumnIndex(TaskTable.KEY_TOTAL_TIME);
 			taskBean.setTotalTime(cursor.getString(columnIndex));
 
+			taskBean.setIndex(index);
+			index++;
 			list.add(taskBean);
 		}
 		cursor.close();

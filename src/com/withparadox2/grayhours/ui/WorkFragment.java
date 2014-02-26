@@ -50,14 +50,10 @@ public class WorkFragment extends BaseFragment{
 		startButton = (Button) v.findViewById(R.id.start_button);
 		startButton.setOnClickListener(new OnStartButtonClickListener());
 		timeTextView = (TextView) v.findViewById(R.id.time_text);
-		Log.d("ttttttttttttttt", ""+UpdateWidgetService.START_FLAG + "== onCreatView");
 
 		if(UpdateWidgetService.isMyServiceRunning(getActivity())){
-			Log.d("============", "onCreatView show eend");
 			startButton.setText("结束");
 		} else {
-			Log.d("============", "onCreatView show start");
-
 			startButton.setText("开始");
 		}
 		updateTimeTextView(0);
