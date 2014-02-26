@@ -92,7 +92,10 @@ public class PanelFragment extends BaseFragment{
 		TaskButton taskButton = new TaskButton(getActivity());
 		taskButton.setTag(index);
 		taskButton.setOnClickListener(new StratWorkOnClickListener());
-		taskButton.setText(taskBeanList.get(index).getName());
+		taskButton.setText(
+			Util.convertSecondsToHours(Integer.parseInt(taskBeanList.get(index).getTotalTime()))
+			+ "\n"
+			+ taskBeanList.get(index).getName());
 		row.addView(taskButton);
 	}
 

@@ -54,7 +54,11 @@ public class Util {
 	}
 
 	public static String convertSecondsToHours(int seconds){
-		return String.valueOf(seconds/60/60);
+		int minutes = seconds/60;
+		if(minutes/60 < 1){
+			return String.valueOf(minutes) + "'";
+		}
+		return String.valueOf(minutes/60) + "h" + String.valueOf(minutes%60) + "m";
 	}
 
 

@@ -6,9 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.task.TimeRunTaskThread;
@@ -45,7 +43,6 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 
 		if (intent.getAction().equals(CustomAction.CLICK_BUTTON_ACTION)){
 			if(UpdateWidgetService.getTaskBean() != null){
-			Log.d("0000000000000000000000", "ClickButton");
 				if(!UpdateWidgetService.isMyServiceRunning(context)){
 					Intent i = new Intent().setClass(context, UpdateWidgetService.class);
 					context.startService(i);
@@ -53,7 +50,6 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 					Intent i = new Intent().setClass(context, UpdateWidgetService.class);
 					context.stopService(i);
 				}
-//				UpdateWidgetService.START_FLAG = !UpdateWidgetService.START_FLAG;
 			} else {
 				Intent i = new Intent().setClass(context, TaskListActivity.class);
 				i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -63,7 +59,6 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 		}
 
 		if (intent.getAction().equals(CustomAction.START_TASK_ACTION)){
-			Log.d("0000000000000000000000", "kaishi renwu");
 
 			TaskBean taskBean = intent.getParcelableExtra(UpdateWidgetService.KEY_TASKBEAN);
 			setTaskNameText(taskBean.getName(), context);
@@ -72,17 +67,17 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 
 		if (intent.getAction().equals(CustomAction.END_TASK_ACTION)){
 			setButtonText("开始",context);
+			setTimeText(0, context);
 		}
 
-		Log.d("=========", intent.getAction());
 
 		if (intent.getAction().equals(CustomAction.SEND_TIME_ACTION)){
-			updateRemoteViews(intent.getIntExtra(TimeRunTaskThread.KEY_TIME, 0), context);
+			setTimeText(intent.getIntExtra(TimeRunTaskThread.KEY_TIME, 0), context);
 		}
 		super.onReceive(context, intent);
 	}
 
-	private void updateRemoteViews(int time, Context context){
+	private void setTimeText(int time, Context context){
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout);
 		remoteViews.setTextViewText(R.id.time_text, Util.convertSecondsToMinuteHourString(time));
 		AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, MyAppWidgetProvider.class), remoteViews);

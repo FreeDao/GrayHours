@@ -37,7 +37,6 @@ public class WorkFragment extends BaseFragment{
 	public WorkFragment(TaskBean taskBean){
 		this.taskBean = taskBean;
 		UpdateWidgetService.setTaskBean(taskBean);
-		Log.d("ttttttttttttttt", ""+UpdateWidgetService.START_FLAG + "== WorkFragment");
 
 	}
 
@@ -93,6 +92,7 @@ public class WorkFragment extends BaseFragment{
 			} else {
 				Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
 				getActivity().stopService(i);
+				updateTimeTextView(0);
 			}
 		}
 	}
