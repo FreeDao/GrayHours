@@ -1,9 +1,11 @@
 package com.withparadox2.grayhours.bean;
 
+import android.os.Parcelable;
+
 /**
  * Created by Administrator on 14-2-20.
  */
-public class TaskBean {
+public class TaskBean{
 	private long id;
 	private String name;
 	private String startTime;
