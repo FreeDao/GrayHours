@@ -38,6 +38,10 @@
 		<service android:name=".ui.UpdateWidgetService">
 			<action android:name="com.withparadox2.grayhours.START_BUTTON_CLICK_ACTION"/>
 		</service>
+		<activity android:name=".ui.widget.TaskListActivity"
+		          android:theme="@android:style/Theme.Dialog">
+
+		</activity>
 
 	</application>
 </manifest>

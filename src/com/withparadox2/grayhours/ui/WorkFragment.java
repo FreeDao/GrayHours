@@ -36,6 +36,7 @@ public class WorkFragment extends BaseFragment{
 
 	public WorkFragment(TaskBean taskBean){
 		this.taskBean = taskBean;
+		UpdateWidgetService.setTaskBean(taskBean);
 	}
 
 
@@ -91,16 +92,6 @@ public class WorkFragment extends BaseFragment{
 				getActivity().stopService(i);
 			}
 			UpdateWidgetService.START_FLAG = !UpdateWidgetService.START_FLAG;
-//			if(timeRunTaskThread == null || !timeRunTaskThread.isAlive()){
-//				timeRunTaskThread = new TimeRunTaskThread(handler);
-//				timeRunTaskThread.start();
-//				startButton.setText("结束");
-//			} else {
-//				timeRunTaskThread.stopThread();
-//				saveTimeToDb(timeTextView.getTag().toString());
-//				updateTimeTextView(0);
-//				startButton.setText("开始");
-//			}
 		}
 	}
 
@@ -111,9 +102,7 @@ public class WorkFragment extends BaseFragment{
 		timeTextView.setTag(time);
 	}
 
-	private void saveTimeToDb(String time){
-		DatabaseManager.getInstanse().updateTotalTimeInTaskTable(taskBean, time);
-	}
+
 
 	private class MyBroadcastReceiver extends BroadcastReceiver{
 
@@ -140,5 +129,14 @@ public class WorkFragment extends BaseFragment{
 			default:
 				return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		getFragmentManager()
+			.beginTransaction()
+			.replace(android.R.id.content, new PanelFragment())
+			.commit();
 	}
 }
