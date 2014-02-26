@@ -2,25 +2,14 @@ package com.withparadox2.grayhours.ui;
 
 import android.app.ActivityManager;
 import android.app.Service;
-import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
-import android.widget.RemoteViews;
-import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
-import com.withparadox2.grayhours.support.BaseHandler;
-import com.withparadox2.grayhours.task.TimeRunTaskThread;
-import com.withparadox2.grayhours.ui.widget.MyAppWidgetProvider;
 import com.withparadox2.grayhours.utils.CustomAction;
-import com.withparadox2.grayhours.utils.Util;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,7 +38,7 @@ public class UpdateWidgetService extends Service{
 	@Override
 	public void onDestroy() {
 		Log.d("==========", "stop timer");
-		stopTimer();
+		stopTimerAndSave();
 		super.onDestroy();
 	}
 
@@ -75,6 +64,7 @@ public class UpdateWidgetService extends Service{
 	private int time = 0;
 
 	private void startTimer(){
+		stopTimer();
 		sendStartTaskBroadcast();
 		timer = new Timer();
 		time = 0;
@@ -89,11 +79,16 @@ public class UpdateWidgetService extends Service{
 		timer.schedule(timerTask, 0, 1000);
 	}
 
-	public void stopTimer() {
+	private void stopTimer(){
 		if (timer != null){
 			timer.cancel();
 			timer.purge();
 		}
+	}
+
+
+	public void stopTimerAndSave() {
+		stopTimer();
 		sendEndTaskBroadcast();
 		saveTimeToDb(String.valueOf(time));
 	}

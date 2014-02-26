@@ -44,14 +44,20 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 	public void onReceive(Context context, Intent intent) {
 
 		if (intent.getAction().equals(CustomAction.CLICK_BUTTON_ACTION)){
-			if(!UpdateWidgetService.START_FLAG){
-				Intent i = new Intent().setClass(context, UpdateWidgetService.class);
-				context.startService(i);
+			if(UpdateWidgetService.getTaskBean() == null){
+				if(!UpdateWidgetService.START_FLAG){
+					Intent i = new Intent().setClass(context, UpdateWidgetService.class);
+					context.startService(i);
+				} else {
+					Intent i = new Intent().setClass(context, UpdateWidgetService.class);
+					context.stopService(i);
+				}
+				UpdateWidgetService.START_FLAG = !UpdateWidgetService.START_FLAG;
 			} else {
-				Intent i = new Intent().setClass(context, UpdateWidgetService.class);
-				context.stopService(i);
+				Intent i = new Intent().setClass(context, TaskListActivity.class);
+				context.startActivity(i);
 			}
-			UpdateWidgetService.START_FLAG = !UpdateWidgetService.START_FLAG;
+
 		}
 
 		if (intent.getAction().equals(CustomAction.START_TASK_ACTION)){
