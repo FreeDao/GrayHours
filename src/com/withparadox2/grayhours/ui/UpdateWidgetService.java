@@ -14,6 +14,8 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.RemoteViews;
 import com.withparadox2.grayhours.R;
+import com.withparadox2.grayhours.bean.TaskBean;
+import com.withparadox2.grayhours.dao.DatabaseManager;
 import com.withparadox2.grayhours.support.BaseHandler;
 import com.withparadox2.grayhours.task.TimeRunTaskThread;
 import com.withparadox2.grayhours.ui.widget.MyAppWidgetProvider;
@@ -30,9 +32,10 @@ public class UpdateWidgetService extends Service{
 	private static Timer timer;
 
 	public static boolean START_FLAG = false;
-	public static final String UPDATE_TIME_BROADCAST = "com.withparadox2.grayhours.SEND_BROADCAST_ACTION";
 	public static final String KEY_TIME = "key_time";
+	public static final String KEY_TASKBEAN = "key_taskbean";
 	private Context context;
+	private static TaskBean taskBean;
 
 	private BroadcastReceiver broadcastReceiver;
 
@@ -59,6 +62,7 @@ public class UpdateWidgetService extends Service{
 	private void sendStartTaskBroadcast(){
 		Intent i = new Intent();
 		i.setAction(CustomAction.START_TASK_ACTION);
+		i.putExtra(KEY_TASKBEAN, taskBean);
 		context.sendBroadcast(i);
 	}
 
@@ -67,11 +71,15 @@ public class UpdateWidgetService extends Service{
 		return null;
 	}
 
+
+	private int time = 0;
+
 	private void startTimer(){
 		sendStartTaskBroadcast();
 		timer = new Timer();
+		time = 0;
 		TimerTask timerTask = new TimerTask() {
-			int time = 0;
+
 			@Override
 			public void run() {
 				context.sendBroadcast(buildIntent(time));
@@ -87,6 +95,7 @@ public class UpdateWidgetService extends Service{
 			timer.purge();
 		}
 		sendEndTaskBroadcast();
+		saveTimeToDb(String.valueOf(time));
 	}
 
 	private Intent buildIntent(int paraTime){
@@ -111,5 +120,17 @@ public class UpdateWidgetService extends Service{
 		@Override
 		public void onReceive(Context context, Intent intent) {
 		}
+	}
+
+	public static void setTaskBean(TaskBean paraTaskBean){
+		taskBean = paraTaskBean;
+	}
+
+	public static TaskBean getTaskBean(){
+		return taskBean;
+	}
+
+	private void saveTimeToDb(String time){
+		DatabaseManager.getInstanse().updateTotalTimeInTaskTable(taskBean, time);
 	}
 }

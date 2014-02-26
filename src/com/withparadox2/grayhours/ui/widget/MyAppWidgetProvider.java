@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 import com.withparadox2.grayhours.R;
+import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.task.TimeRunTaskThread;
 import com.withparadox2.grayhours.ui.UpdateWidgetService;
 import com.withparadox2.grayhours.utils.CustomAction;
@@ -20,14 +21,17 @@ import com.withparadox2.grayhours.utils.Util;
  */
 public class MyAppWidgetProvider extends AppWidgetProvider{
 
-	public static final String START_BUTTON_CLICK_ACTION = "com.withparadox2.grayhours.START_BUTTON_CLICK_ACTION";
-	private boolean TimerIsStopFlag = true;
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		Intent intent = new Intent().setAction(CustomAction.CLICK_BUTTON_ACTION);
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout);
 		remoteViews.setOnClickPendingIntent(R.id.start_button, pendingIntent);
+
+		Intent intent1 = new Intent(context, TaskListActivity.class);
+		PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 0, intent1, 0);
+		remoteViews.setOnClickPendingIntent(R.id.task_name_text, pendingIntent1);
+
 		appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
 	}
 
@@ -51,6 +55,8 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 		}
 
 		if (intent.getAction().equals(CustomAction.START_TASK_ACTION)){
+			TaskBean taskBean = intent.getParcelableExtra(UpdateWidgetService.KEY_TASKBEAN);
+			setTaskNameText(taskBean.getName(), context);
 			setButtonText("结束",context);
 		}
 
@@ -78,4 +84,11 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 		AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, MyAppWidgetProvider.class), remoteViews);
 	}
 
+	private void setTaskNameText(String nameText, Context context){
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout);
+		remoteViews.setTextViewText(R.id.task_name_text, nameText);
+		AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, MyAppWidgetProvider.class), remoteViews);
+	}
+
 }
+

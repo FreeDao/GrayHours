@@ -122,7 +122,7 @@ public class PanelFragment extends BaseFragment{
 		DatabaseManager.getInstanse().creatWorkTableByIndex(index);
 		Fragment fragment = new WorkFragment(taskBean);
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.addToBackStack(null);
+//		transaction.addToBackStack(null);
 		transaction.replace(android.R.id.content, fragment);
 		transaction.commit();
 	}
