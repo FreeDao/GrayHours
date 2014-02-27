@@ -142,7 +142,7 @@ public class WorkFragment extends BaseFragment{
 		stopService();
 	}
 
-	
+
 
 	private void stopService(){
 		Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
