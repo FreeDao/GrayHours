@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
@@ -26,6 +27,7 @@ public class UpdateWidgetService extends Service{
 	public static final String KEY_TASKBEAN = "key_taskbean";
 	private Context context;
 	private static TaskBean taskBean;
+	private PowerManager.WakeLock wakeLock;
 
 	private BroadcastReceiver broadcastReceiver;
 
@@ -34,6 +36,9 @@ public class UpdateWidgetService extends Service{
 		context = this;
 		startTimer();
 		taskBean = DatabaseManager.getInstanse().getTaskList().get(taskBean.getIndex());
+		PowerManager mgr = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+		wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
+		wakeLock.acquire();
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -41,6 +46,7 @@ public class UpdateWidgetService extends Service{
 	public void onDestroy() {
 		Log.d("==========", "stop timer");
 		stopTimerAndSave();
+		wakeLock.release();
 		super.onDestroy();
 	}
 
@@ -129,6 +135,6 @@ public class UpdateWidgetService extends Service{
 
 	private void saveTimeToDb(String time){
 		DatabaseManager.getInstanse().updateTotalTimeInTaskTable(taskBean, time);
-		DatabaseManager.getInstanse().addOrUpdateWork(0, Util.getCurrentDate(), time);
+		DatabaseManager.getInstanse().addOrUpdateWork(taskBean.getIndex(), Util.getCurrentDate(), time);
 	}
 }

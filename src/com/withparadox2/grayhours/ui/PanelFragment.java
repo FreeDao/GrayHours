@@ -83,7 +83,7 @@ public class PanelFragment extends BaseFragment{
 
 	private void setAddTaskButtonView(TableRow row){
 		AddTaskButton addTaskButton = new AddTaskButton(getActivity());
-		addTaskButton.setOnClickListener(new AddOnClickListener());
+//		addTaskButton.setOnClickListener(new AddOnClickListener());
 		addTaskButton.setText("add");
 		row.addView(addTaskButton);
 	}
@@ -91,7 +91,7 @@ public class PanelFragment extends BaseFragment{
 	private void setTaskButtonView(TableRow row, int index){
 		TaskButton taskButton = new TaskButton(getActivity());
 		taskButton.setTag(index);
-		taskButton.setOnClickListener(new StratWorkOnClickListener());
+//		taskButton.setOnClickListener(new StratWorkOnClickListener());
 		taskButton.setText(
 			Util.convertSecondsToHours(Integer.parseInt(taskBeanList.get(index).getTotalTime()))
 			+ "\n"
@@ -122,8 +122,6 @@ public class PanelFragment extends BaseFragment{
 
 	private void startWorkClick(int index){
 		TaskBean taskBean = taskBeanList.get(index);
-		taskBean.setIndex(index);
-		DatabaseManager.getInstanse().creatWorkTableByIndex(index);
 		Fragment fragment = new WorkFragment(taskBean);
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(android.R.id.content, fragment);
@@ -143,6 +141,7 @@ public class PanelFragment extends BaseFragment{
 					public void onClick(DialogInterface dialog, int which) {
 						if (!TextUtils.isEmpty(editText.getText())) {
 							DatabaseManager.getInstanse().addTask(editText.getText().toString(), Util.getCurrentDate());
+							DatabaseManager.getInstanse().creatWorkTableByIndex(getNewButtonIndex());
 							buildView(root);
 						}
 					}
@@ -151,6 +150,10 @@ public class PanelFragment extends BaseFragment{
 				.create();
 			return alertDialog;
 		}
+	}
+
+	private int getNewButtonIndex(){
+		return taskBeanList.size();
 	}
 
 }
