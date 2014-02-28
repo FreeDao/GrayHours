@@ -83,13 +83,13 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 			case MotionEvent.ACTION_UP:
 				ACTION_DOWN = false;
 				invalidate();
-				if (!clickOnce){
-					startAnimation(0f);
-				} else {
-					startAnimation(1f);
-				}
-				clickOnce = !clickOnce;
-				DebugConfig.log("action up");
+//				if (!clickOnce){
+//					startAnimation(0f);
+//				} else {
+//					startAnimation(1f);
+//				}
+//				clickOnce = !clickOnce;
+//				DebugConfig.log("action up");
 
 
 				break;
