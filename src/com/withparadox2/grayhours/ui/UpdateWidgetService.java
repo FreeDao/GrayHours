@@ -10,6 +10,7 @@ import android.util.Log;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
 import com.withparadox2.grayhours.utils.CustomAction;
+import com.withparadox2.grayhours.utils.Util;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,12 +33,12 @@ public class UpdateWidgetService extends Service{
 
 		context = this;
 		startTimer();
+		taskBean = DatabaseManager.getInstanse().getTaskList().get(taskBean.getIndex());
 		return super.onStartCommand(intent, flags, startId);
 	}
 
 	@Override
 	public void onDestroy() {
-		Log.d("==========", "stop timer");
 		stopTimerAndSave();
 		super.onDestroy();
 	}
@@ -127,5 +128,6 @@ public class UpdateWidgetService extends Service{
 
 	private void saveTimeToDb(String time){
 		DatabaseManager.getInstanse().updateTotalTimeInTaskTable(taskBean, time);
+		DatabaseManager.getInstanse().addOrUpdateWork(0, Util.getCurrentDate(), time);
 	}
 }

@@ -16,6 +16,7 @@ import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
 import com.withparadox2.grayhours.ui.custom.AddTaskButton;
 import com.withparadox2.grayhours.ui.custom.TaskButton;
+import com.withparadox2.grayhours.utils.Util;
 
 import java.util.List;
 
@@ -91,7 +92,10 @@ public class PanelFragment extends BaseFragment{
 		TaskButton taskButton = new TaskButton(getActivity());
 		taskButton.setTag(index);
 		taskButton.setOnClickListener(new StratWorkOnClickListener());
-		taskButton.setText(taskBeanList.get(index).getName());
+		taskButton.setText(
+			Util.convertSecondsToHours(Integer.parseInt(taskBeanList.get(index).getTotalTime()))
+			+ "\n"
+			+ taskBeanList.get(index).getName());
 		row.addView(taskButton);
 	}
 
@@ -122,7 +126,6 @@ public class PanelFragment extends BaseFragment{
 		DatabaseManager.getInstanse().creatWorkTableByIndex(index);
 		Fragment fragment = new WorkFragment(taskBean);
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//		transaction.addToBackStack(null);
 		transaction.replace(android.R.id.content, fragment);
 		transaction.commit();
 	}
@@ -139,7 +142,7 @@ public class PanelFragment extends BaseFragment{
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						if (!TextUtils.isEmpty(editText.getText())) {
-							DatabaseManager.getInstanse().addTask(editText.getText().toString(), "today");
+							DatabaseManager.getInstanse().addTask(editText.getText().toString(), Util.getCurrentDate());
 							buildView(root);
 						}
 					}

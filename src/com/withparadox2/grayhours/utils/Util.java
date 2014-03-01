@@ -31,7 +31,7 @@ public class Util {
 
 	public static String getCurrentDate(){
 		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return simpleDateFormat.format(calendar.getTime());
 	}
 
@@ -54,7 +54,11 @@ public class Util {
 	}
 
 	public static String convertSecondsToHours(int seconds){
-		return String.valueOf(seconds/60/60);
+		int minutes = seconds/60;
+		if(minutes/60 < 1){
+			return String.valueOf(minutes) + "m";
+		}
+		return String.valueOf(minutes/60) + "h" + String.valueOf(minutes%60) + "m";
 	}
 
 

@@ -1,8 +1,10 @@
 package com.withparadox2.grayhours.ui.custom;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TableRow;
 
@@ -25,5 +27,11 @@ public class AddTaskButton extends Button{
 
 	public AddTaskButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		ViewGroup.getChildMeasureSpec()
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 }

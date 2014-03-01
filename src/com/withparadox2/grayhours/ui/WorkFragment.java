@@ -37,7 +37,6 @@ public class WorkFragment extends BaseFragment{
 	public WorkFragment(TaskBean taskBean){
 		this.taskBean = taskBean;
 		UpdateWidgetService.setTaskBean(taskBean);
-		Log.d("ttttttttttttttt", ""+UpdateWidgetService.START_FLAG + "== WorkFragment");
 
 	}
 
@@ -50,14 +49,10 @@ public class WorkFragment extends BaseFragment{
 		startButton = (Button) v.findViewById(R.id.start_button);
 		startButton.setOnClickListener(new OnStartButtonClickListener());
 		timeTextView = (TextView) v.findViewById(R.id.time_text);
-		Log.d("ttttttttttttttt", ""+UpdateWidgetService.START_FLAG + "== onCreatView");
 
 		if(UpdateWidgetService.isMyServiceRunning(getActivity())){
-			Log.d("============", "onCreatView show eend");
 			startButton.setText("结束");
 		} else {
-			Log.d("============", "onCreatView show start");
-
 			startButton.setText("开始");
 		}
 		updateTimeTextView(0);
@@ -97,6 +92,7 @@ public class WorkFragment extends BaseFragment{
 			} else {
 				Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
 				getActivity().stopService(i);
+				updateTimeTextView(0);
 			}
 		}
 	}
