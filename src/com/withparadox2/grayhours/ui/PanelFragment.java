@@ -191,7 +191,6 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 			}
 
 		} else {
-			updateList();
 			buildView(root);
 		}
 	}
