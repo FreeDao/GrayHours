@@ -7,12 +7,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.animation.Animation;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableRow;
 import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
@@ -29,10 +26,9 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 
 	public BaseButton(Context context, String strokeColor, String fillColor) {
 		super(context);
-		TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
+		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
 			Util.getScreenWidth()/2,
-			Util.getScreenHeigth()/2);
-		layoutParams.gravity = Gravity.CENTER;
+			Util.getScreenHeight()/2);
 		this.setBackgroundDrawable(null);
 		this.setLayoutParams(layoutParams);
 		this.stokeColor = strokeColor;
@@ -52,7 +48,7 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 		if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY){
 			setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec));
 		} else {
-			setMeasuredDimension(Util.getScreenWidth()/2,Util.getScreenHeigth()/2);
+			setMeasuredDimension(Util.getScreenWidth()/2,Util.getScreenHeight()/2);
 		}
 	}
 
@@ -115,7 +111,7 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 //		DebugConfig.log("animation is called");
 //		TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
 //			(int) (Util.getScreenWidth() * (1 + value) / 2),
-//			(int) (Util.getScreenHeigth() * (1 + value) / 2));
+//			(int) (Util.getScreenHeight() * (1 + value) / 2));
 //		layoutParams.gravity = Gravity.CENTER;
 //		setLayoutParams(layoutParams);
 //		requestLayout();

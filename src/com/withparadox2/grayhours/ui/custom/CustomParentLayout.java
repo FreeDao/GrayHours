@@ -1,11 +1,14 @@
 package com.withparadox2.grayhours.ui.custom;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import com.withparadox2.grayhours.utils.DebugConfig;
+import com.withparadox2.grayhours.utils.Util;
 
 /**
- * Created by Administrator on 14-3-1.
+ * Created by withparadox2 on 14-3-1.
  */
 public class CustomParentLayout extends ViewGroup{
 	public CustomParentLayout(Context context) {
@@ -21,9 +24,26 @@ public class CustomParentLayout extends ViewGroup{
 	}
 
 	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		int childWidthSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY, Util.getScreenWidth());
+		int childHeightSpec;
+		for (int i = 0; i < getChildCount(); i++){
+			LayoutParams lp = getChildAt(i).getLayoutParams();
+			if (lp.height > 0){
+				childHeightSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY, lp.height);
+			} else {
+				childHeightSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.AT_MOST, Util.getScreenHeight());
+			}
+			measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
+		}
+		setMeasuredDimension(Util.getScreenWidth(), Util.getScreenHeight());
+	}
+
+	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		CustomRowLayout rowLayout1 = (CustomRowLayout) getChildAt(0);
 		CustomRowLayout rowLayout2 = (CustomRowLayout) getChildAt(1);
+		DebugConfig.log("rowLayout1 height:" + rowLayout1.getMeasuredHeight());
 		if (rowLayout1.getMeasuredHeight() > rowLayout2.getMeasuredHeight()){
 			rowLayout1.layout(0, 0, rowLayout1.getMeasuredWidth(), rowLayout1.getMeasuredHeight());
 			rowLayout2.layout(0, rowLayout1.getMeasuredHeight(), rowLayout2.getMeasuredWidth(),
@@ -36,4 +56,5 @@ public class CustomParentLayout extends ViewGroup{
 				getMeasuredHeight());
 		}
 	}
+
 }

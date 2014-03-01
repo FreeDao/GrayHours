@@ -3,8 +3,8 @@ package com.withparadox2.grayhours.ui.custom;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.ViewGroup;
+import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 /**
@@ -13,7 +13,8 @@ import com.withparadox2.grayhours.utils.Util;
 public class CustomRowLayout extends ViewGroup{
 	public CustomRowLayout(Context context) {
 		super(context);
-		this.setBackgroundColor(Color.YELLOW);
+		ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, Util.getScreenHeight()/2);
+		this.setLayoutParams(params);
 	}
 
 	public CustomRowLayout(Context context, AttributeSet attrs) {
@@ -26,10 +27,23 @@ public class CustomRowLayout extends ViewGroup{
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		int childWidthSpec;
+		int childHeightSpec;
+		for (int i = 0; i < getChildCount(); i++){
+			LayoutParams lp = getChildAt(i).getLayoutParams();
+			if (lp.height > 0){
+				childHeightSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY, lp.height);
+				childWidthSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY, lp.width);
+			} else {
+				childHeightSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.AT_MOST, Util.getScreenHeight()/2);
+				childWidthSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.AT_MOST, Util.getScreenWidth()/2);
+			}
+			measureChild(getChildAt(i), childWidthSpec, childHeightSpec);
+		}
 		if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY){
 			setMeasuredDimension(Util.getScreenWidth(), MeasureSpec.getSize(heightMeasureSpec));
 		} else {
-			setMeasuredDimension(Util.getScreenWidth(), Util.getScreenHeigth()/2);
+			setMeasuredDimension(Util.getScreenWidth(), Util.getScreenHeight()/2);
 		}
 	}
 

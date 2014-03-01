@@ -78,7 +78,7 @@ public class Util {
 		return p.x;
 	}
 
-	public static int getScreenHeigth(){
+	public static int getScreenHeight(){
 		Point p = getScreenSize();
 		return p.y;
 	}
