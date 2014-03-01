@@ -18,6 +18,7 @@ import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
 import com.withparadox2.grayhours.ui.custom.*;
+import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 	private CustomParentLayout root;
 	private ValueAnimator animator;
 	private int animationIndex;
+	private boolean zoomFlag = false;
 
 
 	@Override
@@ -38,8 +40,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 
 		root.addView(new CustomRowLayout(getActivity()));
 		root.addView(new CustomRowLayout(getActivity()));
-		root.getChildAt(0).setBackgroundColor(Color.YELLOW);
-		root.getChildAt(0).setBackgroundColor(Color.BLUE);
+
 
 		buildView(root);
 		return root;
@@ -49,9 +50,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-		animator = ValueAnimator.ofFloat(0f, 1f);
-		animator.addUpdateListener(this);
-		animator.setDuration(2000);
+
 	}
 
 	private void updateList(){
@@ -112,15 +111,33 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 		row.addView(taskButton);
 	}
 
+	private void startAnimator(){
+		if (!zoomFlag){
+			animator = ValueAnimator.ofFloat(0f, 1f);
+		} else {
+			animator = ValueAnimator.ofFloat(1f, 0f);
+		}
+		animator.addUpdateListener(this);
+		animator.setDuration(2000);
+		zoomFlag = !zoomFlag;
+		animator.start();
+	}
+
 	@Override
 	public void onAnimationUpdate(ValueAnimator animation) {
 		float value = (Float)animation.getAnimatedValue();
 		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams((int)(Util.getScreenWidth()*(1+value)/2),
 			(int)(Util.getScreenHeight()*(1+value)/2));
-		((CustomRowLayout)(root.getChildAt(0))).getChildAt(0).setLayoutParams(layoutParams);
+
+		ViewGroup.LayoutParams layoutParams1 = new ViewGroup.LayoutParams(Util.getScreenWidth(),
+				(int)(Util.getScreenHeight()*(1+value)/2));
+
+		root.getCustomChild(animationIndex/2).getCustomChild(animationIndex%2).setLayoutParams(layoutParams);
+		root.getCustomChild(animationIndex/2).setLayoutParams(layoutParams1);
 		root.requestLayout();
 		root.invalidate();
 	}
+
 
 	private class AddOnClickListener implements View.OnClickListener{
 
@@ -141,7 +158,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 		public void onClick(View v) {
 //			startWorkClick((Integer) v.getTag());
 			animationIndex = ((BaseButton) v).getIndex();
-			animator.start();
+			startAnimator();
 		}
 	}
 

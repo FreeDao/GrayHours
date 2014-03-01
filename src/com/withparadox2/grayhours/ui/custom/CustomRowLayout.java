@@ -83,4 +83,8 @@ public class CustomRowLayout extends ViewGroup{
 				break;
 		}
 	}
+
+	public BaseButton getCustomChild(int index){
+		return (BaseButton) getChildAt(index);
+	}
 }

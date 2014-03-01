@@ -79,8 +79,19 @@ public class Util {
 	}
 
 	public static int getScreenHeight(){
-		Point p = getScreenSize();
-		return p.y;
+//		Point p = getScreenSize();
+//		if(screenHeight < 0){
+//			return p.y;
+//		} else {
+//			return screenHeight;
+//		}
+		return 1134;
+	}
+
+	private static int screenHeight = -1;
+
+	public static void setScreenHeight(int height){
+		screenHeight = height;
 	}
 
 }

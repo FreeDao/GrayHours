@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,6 +30,7 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
 			Util.getScreenWidth()/2,
 			Util.getScreenHeight()/2);
+		this.setGravity(Gravity.CENTER);
 		this.setBackgroundDrawable(null);
 		this.setLayoutParams(layoutParams);
 		this.stokeColor = strokeColor;
@@ -81,15 +83,6 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 			case MotionEvent.ACTION_UP:
 				ACTION_DOWN = false;
 				invalidate();
-				if (!clickOnce){
-					startAnimation(0f);
-				} else {
-					startAnimation(1f);
-				}
-				clickOnce = !clickOnce;
-				DebugConfig.log("action up");
-
-
 				break;
 		}
 		return super.onTouchEvent(event);
