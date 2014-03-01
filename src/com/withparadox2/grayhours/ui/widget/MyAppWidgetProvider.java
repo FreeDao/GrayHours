@@ -42,6 +42,7 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 	public void onReceive(Context context, Intent intent) {
 
 		if (intent.getAction().equals(CustomAction.CLICK_BUTTON_ACTION)){
+
 			if(UpdateWidgetService.getTaskBean() != null){
 				if(!UpdateWidgetService.isMyServiceRunning(context)){
 					Intent i = new Intent().setClass(context, UpdateWidgetService.class);
@@ -62,12 +63,13 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 
 			TaskBean taskBean = intent.getParcelableExtra(UpdateWidgetService.KEY_TASKBEAN);
 			setTaskNameText(taskBean.getName(), context);
-			setButtonText("结束",context);
+			setButtonDrawable(android.R.drawable.ic_media_pause, context);
 		}
 
 		if (intent.getAction().equals(CustomAction.END_TASK_ACTION)){
-			setButtonText("开始",context);
 			setTimeText(0, context);
+			setButtonDrawable(android.R.drawable.ic_media_play, context);
+
 		}
 
 
@@ -92,6 +94,12 @@ public class MyAppWidgetProvider extends AppWidgetProvider{
 	private void setTaskNameText(String nameText, Context context){
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout);
 		remoteViews.setTextViewText(R.id.task_name_text, nameText);
+		AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, MyAppWidgetProvider.class), remoteViews);
+	}
+
+	private void setButtonDrawable(int id, Context context){
+		RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget_layout);
+		remoteViews.setImageViewResource(R.id.start_button, id);
 		AppWidgetManager.getInstance(context).updateAppWidget(new ComponentName(context, MyAppWidgetProvider.class), remoteViews);
 	}
 

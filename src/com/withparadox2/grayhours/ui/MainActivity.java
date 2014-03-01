@@ -21,12 +21,8 @@ public class MainActivity extends Activity {
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		Fragment fragmentToStart;
 		actionBar.setIcon(android.R.color.transparent);
-		Log.d("ttttttttttttttt", ""+UpdateWidgetService.START_FLAG + "== mainActivity");
-		if(UpdateWidgetService.isMyServiceRunning(getApplicationContext()) ){
-			fragmentToStart = new WorkFragment(UpdateWidgetService.getTaskBean());
-		} else {
-			fragmentToStart = new PanelFragment();
-		}
+
+		fragmentToStart = new PanelFragment();
 		getFragmentManager()
 				.beginTransaction()
 				.replace(android.R.id.content,fragmentToStart)

@@ -1,21 +1,26 @@
 package com.withparadox2.grayhours.ui;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.app.*;
-import android.content.DialogInterface;
+import android.content.*;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableRow;
 import android.widget.Toast;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
-import com.withparadox2.grayhours.ui.custom.AddTaskButton;
-import com.withparadox2.grayhours.ui.custom.TaskButton;
+import com.withparadox2.grayhours.ui.custom.*;
+import com.withparadox2.grayhours.utils.CustomAction;
+import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 import java.util.List;
@@ -23,15 +28,28 @@ import java.util.List;
 /**
  * Created by withparadox2 on 14-2-20.
  */
-public class PanelFragment extends BaseFragment{
+public class PanelFragment extends BaseFragment implements ValueAnimator.AnimatorUpdateListener, ValueAnimator.AnimatorListener{
 	private List<TaskBean> taskBeanList;
-	private View root;
+	private CustomParentLayout root;
+	private ValueAnimator animator;
+	private int animationIndex;
+	private boolean zoomFlag = false;
+	private BroadcastReceiver broadcastReceiver;
+	private boolean serviceIsRunningBeforeActivity = false;
+
 
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		root = inflater.inflate(R.layout.panelfragment_layout, container, false);
+		root = new CustomParentLayout(getActivity());
+
+		root.addView(new CustomRowLayout(getActivity()));
+		root.addView(new CustomRowLayout(getActivity()));
+
+
 		buildView(root);
+
+
 		return root;
 	}
 
@@ -39,16 +57,47 @@ public class PanelFragment extends BaseFragment{
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+
+	}
+
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(CustomAction.START_TASK_ACTION);
+		intentFilter.addAction(CustomAction.END_TASK_ACTION);
+		intentFilter.addAction(CustomAction.SEND_TIME_ACTION);
+		broadcastReceiver = new MyBroadcastReceiver();
+		getActivity().registerReceiver(broadcastReceiver, intentFilter);
+		if (UpdateWidgetService.isMyServiceRunning(getActivity())){
+			serviceIsRunningBeforeActivity = true;
+			animationIndex = UpdateWidgetService.getTaskBean().getIndex();
+			if (!zoomFlag){
+				startAnimator();
+			}
+		} else {
+			serviceIsRunningBeforeActivity = false;
+			if (zoomFlag){
+				startAnimator();
+			}
+		}
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		getActivity().unregisterReceiver(broadcastReceiver);
 	}
 
 	private void updateList(){
 		taskBeanList = DatabaseManager.getInstanse().getTaskList();
 	}
 
-	private void buildView(View root){
+	private void buildView(ViewGroup root){
 		updateList();
-		TableRow row1 = (TableRow) root.findViewById(R.id.first_row_id);
-		TableRow row2 = (TableRow) root.findViewById(R.id.second_row_id);
+		CustomRowLayout row1 = (CustomRowLayout) root.getChildAt(0);
+		CustomRowLayout row2 = (CustomRowLayout) root.getChildAt(1);
 		row1.removeAllViews();
 		row2.removeAllViews();
 		switch (taskBeanList.size()){
@@ -81,23 +130,87 @@ public class PanelFragment extends BaseFragment{
 
 	}
 
-	private void setAddTaskButtonView(TableRow row){
+	private void setAddTaskButtonView(CustomRowLayout row){
 		AddTaskButton addTaskButton = new AddTaskButton(getActivity());
 		addTaskButton.setOnClickListener(new AddOnClickListener());
 		addTaskButton.setText("add");
 		row.addView(addTaskButton);
 	}
 
-	private void setTaskButtonView(TableRow row, int index){
+	private void setTaskButtonView(CustomRowLayout row, int index){
 		TaskButton taskButton = new TaskButton(getActivity());
-		taskButton.setTag(index);
+		taskButton.setIndex(index);
 		taskButton.setOnClickListener(new StratWorkOnClickListener());
-		taskButton.setText(
-			Util.convertSecondsToHours(Integer.parseInt(taskBeanList.get(index).getTotalTime()))
-			+ "\n"
-			+ taskBeanList.get(index).getName());
+		taskButton.setText(taskBeanList.get(index).getName());
+		taskButton.setTimeText(Util.convertSecondsToHours(Integer.parseInt(taskBeanList.get(index).getTotalTime())));
 		row.addView(taskButton);
 	}
+
+
+	private void startAnimator(){
+		if (!zoomFlag){
+			animator = ValueAnimator.ofFloat(0f, 1f);
+		} else {
+			animator = ValueAnimator.ofFloat(1f, 0f);
+		}
+		animator.addUpdateListener(this);
+		animator.addListener(this);
+		animator.setDuration(2000);
+		zoomFlag = !zoomFlag;
+		animator.start();
+	}
+
+	@Override
+	public void onAnimationUpdate(ValueAnimator animation) {
+		float value = (Float)animation.getAnimatedValue();
+		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams((int)(Util.getScreenWidth()*(1+value)/2),
+			(int)(Util.getScreenHeight()*(1+value)/2));
+
+		ViewGroup.LayoutParams layoutParams1 = new ViewGroup.LayoutParams(Util.getScreenWidth(),
+				(int)(Util.getScreenHeight()*(1+value)/2));
+
+		root.getCustomChild(animationIndex/2).getCustomChild(animationIndex%2).setLayoutParams(layoutParams);
+		root.getCustomChild(animationIndex/2).setLayoutParams(layoutParams1);
+		root.requestLayout();
+		root.invalidate();
+	}
+
+	@Override
+	public void onAnimationStart(Animator animation) {
+		if (!zoomFlag){
+			if (UpdateWidgetService.isMyServiceRunning(getActivity())){
+				stopService();
+			}
+		}
+
+	}
+
+	@Override
+	public void onAnimationEnd(Animator animation) {
+		if (zoomFlag){
+			if (!UpdateWidgetService.isMyServiceRunning(getActivity())||!serviceIsRunningBeforeActivity){
+				UpdateWidgetService.setTaskBean(taskBeanList.get(animationIndex));
+				if (UpdateWidgetService.isMyServiceRunning(getActivity())){
+					stopService();
+				}
+				startService();
+			}
+
+		} else {
+			buildView(root);
+		}
+	}
+
+	@Override
+	public void onAnimationCancel(Animator animation) {
+
+	}
+
+	@Override
+	public void onAnimationRepeat(Animator animation) {
+
+	}
+
 
 	private class AddOnClickListener implements View.OnClickListener{
 
@@ -116,19 +229,16 @@ public class PanelFragment extends BaseFragment{
 
 		@Override
 		public void onClick(View v) {
-			startWorkClick((Integer) v.getTag());
+			animationIndex = ((BaseButton) v).getIndex();
+			startAnimator();
+			if (zoomFlag){
+				if (UpdateWidgetService.isMyServiceRunning(getActivity())){
+					stopService();
+				}
+			}
 		}
 	}
 
-	private void startWorkClick(int index){
-		TaskBean taskBean = taskBeanList.get(index);
-		taskBean.setIndex(index);
-		DatabaseManager.getInstanse().creatWorkTableByIndex(index);
-		Fragment fragment = new WorkFragment(taskBean);
-		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		transaction.replace(android.R.id.content, fragment);
-		transaction.commit();
-	}
 
 	private class AddDialogFragment extends DialogFragment{
 		@Override
@@ -143,6 +253,7 @@ public class PanelFragment extends BaseFragment{
 					public void onClick(DialogInterface dialog, int which) {
 						if (!TextUtils.isEmpty(editText.getText())) {
 							DatabaseManager.getInstanse().addTask(editText.getText().toString(), Util.getCurrentDate());
+							DatabaseManager.getInstanse().creatWorkTableByIndex(getNewButtonIndex());
 							buildView(root);
 						}
 					}
@@ -150,6 +261,42 @@ public class PanelFragment extends BaseFragment{
 				.setNegativeButton("取消", null)
 				.create();
 			return alertDialog;
+		}
+	}
+
+	private int getNewButtonIndex(){
+		return taskBeanList.size();
+	}
+
+	private void stopService(){
+		DebugConfig.log("stopService is called");
+		Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
+		getActivity().stopService(i);
+	}
+
+	private void startService(){
+		Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
+		getActivity().startService(i);
+	}
+
+	private void updateTimeTextView(int time){
+		root.getCustomChild(animationIndex/2)
+			.getCustomChild(animationIndex%2)
+			.setTimeText(Util.convertSecondsToMinuteHourString(time));
+	}
+
+	private class MyBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(CustomAction.SEND_TIME_ACTION)){
+				updateTimeTextView((intent.getIntExtra(UpdateWidgetService.KEY_TIME, 0)));
+			} else if (action.equals(CustomAction.END_TASK_ACTION)){
+//
+			}
+
+
 		}
 	}
 

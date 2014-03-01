@@ -2,8 +2,11 @@ package com.withparadox2.grayhours.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.WindowManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,6 +64,35 @@ public class Util {
 		return String.valueOf(minutes/60) + "h" + String.valueOf(minutes%60) + "m";
 	}
 
+	public static Point getScreenSize(){
+		WindowManager windowManager = (WindowManager) GlobalContext.getInstance()
+			.getSystemService(Context.WINDOW_SERVICE);
+		Display display = windowManager.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		return size;
+	}
 
+	public static int getScreenWidth(){
+		Point p = getScreenSize();
+		return p.x;
+	}
+
+	public static int getScreenHeight(){
+//		Point p = getScreenSize();
+//		if(screenHeight < 0){
+//			return p.y;
+//		} else {
+//			return screenHeight;
+//		}
+		return screenHeight;
+//		return 1134;
+	}
+
+	private static int screenHeight = -1;
+
+	public static void setScreenHeight(int height){
+		screenHeight = height;
+	}
 
 }

@@ -37,7 +37,6 @@ public class WorkFragment extends BaseFragment{
 	public WorkFragment(TaskBean taskBean){
 		this.taskBean = taskBean;
 		UpdateWidgetService.setTaskBean(taskBean);
-
 	}
 
 
@@ -125,7 +124,14 @@ public class WorkFragment extends BaseFragment{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()){
 			case android.R.id.home:
-				getFragmentManager().popBackStack();
+				if(UpdateWidgetService.isMyServiceRunning(getActivity())){
+					getActivity().finish();
+				} else {
+					getActivity().getFragmentManager()
+						.beginTransaction()
+						.replace(android.R.id.content, new PanelFragment())
+						.commit();
+				}
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -135,7 +141,6 @@ public class WorkFragment extends BaseFragment{
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		stopService();
 	}
 
 
@@ -143,5 +148,6 @@ public class WorkFragment extends BaseFragment{
 	private void stopService(){
 		Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
 		getActivity().stopService(i);
+		updateTimeTextView(0);
 	}
 }

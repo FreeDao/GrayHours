@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:padding="5dp"
+                android:paddingLeft="8dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/widget_backgroud">
 	<TextView
-		android:textSize="20sp"
-		android:layout_width="140dp"
+		android:textColor="@color/ivory"
+		android:textSize="15sp"
+		android:layout_width="80dp"
 		android:layout_height="wrap_content"
+		android:layout_alignTop="@+id/start_button"
+		android:layout_marginBottom="2dp"
 		android:id="@+id/task_name_text"/>
 
 	<TextView
+		android:textColor="@color/ivory"
 		android:layout_below="@id/task_name_text"
-		android:textSize="15sp"
+		android:textSize="13sp"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_alignBottom="@id/start_button"
+		android:layout_marginTop="2dp"
 		android:id="@+id/time_text"/>
-	<Button
-		android:layout_toRightOf="@id/task_name_text"
-		android:layout_width="60dp"
-		android:layout_height="wrap_content"
-		android:text="@string/start"
-		android:id="@+id/start_button"/>
+	<ImageButton
+		android:layout_alignParentRight="true"
+		android:layout_width="50dp"
+		android:layout_height="50dp"
+		android:scaleType="fitXY"
+		android:src="@android:drawable/ic_media_play"
+		android:id="@id/start_button"/>
 
 </RelativeLayout>
