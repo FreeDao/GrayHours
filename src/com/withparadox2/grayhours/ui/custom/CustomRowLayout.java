@@ -13,8 +13,8 @@ import com.withparadox2.grayhours.utils.Util;
 public class CustomRowLayout extends ViewGroup{
 	public CustomRowLayout(Context context) {
 		super(context);
-		ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, Util.getScreenHeight()/2);
-		this.setLayoutParams(params);
+//		ViewGroup.LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, Util.getScreenHeight()/2);
+//		this.setLayoutParams(params);
 	}
 
 	public CustomRowLayout(Context context, AttributeSet attrs) {

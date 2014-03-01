@@ -85,7 +85,8 @@ public class Util {
 //		} else {
 //			return screenHeight;
 //		}
-		return 1134;
+		return screenHeight;
+//		return 1134;
 	}
 
 	private static int screenHeight = -1;

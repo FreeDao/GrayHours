@@ -28,13 +28,13 @@ public class BaseButton extends Button{
 
 	public BaseButton(Context context, String strokeColor, String fillColor) {
 		super(context);
-		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-			Util.getScreenWidth()/2,
-			Util.getScreenHeight()/2);
+//		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+//			Util.getScreenWidth()/2,
+//			Util.getScreenHeight()/2);
 		this.setGravity(Gravity.CENTER);
 		this.setGravity(Gravity.CENTER_HORIZONTAL);
 		this.setBackgroundDrawable(null);
-		this.setLayoutParams(layoutParams);
+//		this.setLayoutParams(layoutParams);
 		this.stokeColor = strokeColor;
 		this.fillColor = fillColor;
 	}

@@ -13,8 +13,8 @@ import com.withparadox2.grayhours.utils.Util;
 public class CustomParentLayout extends ViewGroup{
 	public CustomParentLayout(Context context) {
 		super(context);
-//		ViewGroup.LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-//		this.setLayoutParams(lp);
+		ViewGroup.LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		this.setLayoutParams(lp);
 	}
 
 	public CustomParentLayout(Context context, AttributeSet attrs) {
@@ -27,7 +27,8 @@ public class CustomParentLayout extends ViewGroup{
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+			MeasureSpec.getSize(heightMeasureSpec));
 		Util.setScreenHeight(getMeasuredHeight());
 		int childWidthSpec = MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY, Util.getScreenWidth());
 		int childHeightSpec;
