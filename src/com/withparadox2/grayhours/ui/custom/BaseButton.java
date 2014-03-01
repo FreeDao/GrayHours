@@ -24,12 +24,14 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 	private boolean clickOnce = false;
 	private String stokeColor;
 	private String fillColor;
+	private int index;
+	private boolean animatingFlag = false;
 
 	public BaseButton(Context context, String strokeColor, String fillColor) {
 		super(context);
 		TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
-			TableRow.LayoutParams.WRAP_CONTENT,
-			TableRow.LayoutParams.WRAP_CONTENT);
+			Util.getScreenWidth()/2,
+			Util.getScreenHeigth()/2);
 		layoutParams.gravity = Gravity.CENTER;
 		this.setBackgroundDrawable(null);
 		this.setLayoutParams(layoutParams);
@@ -83,13 +85,13 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 			case MotionEvent.ACTION_UP:
 				ACTION_DOWN = false;
 				invalidate();
-//				if (!clickOnce){
-//					startAnimation(0f);
-//				} else {
-//					startAnimation(1f);
-//				}
-//				clickOnce = !clickOnce;
-//				DebugConfig.log("action up");
+				if (!clickOnce){
+					startAnimation(0f);
+				} else {
+					startAnimation(1f);
+				}
+				clickOnce = !clickOnce;
+				DebugConfig.log("action up");
 
 
 				break;
@@ -100,7 +102,7 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 
 
 	private void startAnimation(float startPoint){
-		ValueAnimator animator = ObjectAnimator.ofFloat(this, "ScaleX", 0, 3);
+		ValueAnimator animator = ObjectAnimator.ofFloat(this, "TranslationY", 0, 300);
 		animator.setDuration(2000);
 		animator.addUpdateListener(this);
 		animator.start();
@@ -118,5 +120,21 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 //		setLayoutParams(layoutParams);
 //		requestLayout();
 		invalidate();
+	}
+
+	public void setIndex(int index){
+		this.index  = index;
+	}
+
+	public int getIndex(){
+		return index;
+	}
+
+	public void setAnimatingFlag(boolean flag){
+		animatingFlag = flag;
+	}
+
+	public boolean getAnimatingFlag(){
+		return animatingFlag;
 	}
 }

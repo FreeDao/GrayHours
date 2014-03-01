@@ -83,7 +83,7 @@ public class PanelFragment extends BaseFragment{
 
 	private void setAddTaskButtonView(TableRow row){
 		AddTaskButton addTaskButton = new AddTaskButton(getActivity());
-		addTaskButton.setOnClickListener(new AddOnClickListener());
+//		addTaskButton.setOnClickListener(new AddOnClickListener());
 		addTaskButton.setText("add");
 		row.addView(addTaskButton);
 	}
@@ -91,7 +91,7 @@ public class PanelFragment extends BaseFragment{
 	private void setTaskButtonView(TableRow row, int index){
 		TaskButton taskButton = new TaskButton(getActivity());
 		taskButton.setTag(index);
-		taskButton.setOnClickListener(new StratWorkOnClickListener());
+//		taskButton.setOnClickListener(new StratWorkOnClickListener());
 		taskButton.setText(
 			Util.convertSecondsToHours(Integer.parseInt(taskBeanList.get(index).getTotalTime()))
 			+ "\n"
