@@ -148,5 +148,6 @@ public class WorkFragment extends BaseFragment{
 	private void stopService(){
 		Intent i = new Intent().setClass(getActivity(), UpdateWidgetService.class);
 		getActivity().stopService(i);
+		updateTimeTextView(0);
 	}
 }

@@ -15,15 +15,16 @@ import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 /**
- * Created by Administrator on 14-2-28.
+ * Created by withparadox2 on 14-2-28.
  */
-public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateListener{
+public class BaseButton extends Button{
 	protected boolean ACTION_DOWN = false;
 	private boolean clickOnce = false;
 	private String stokeColor;
 	private String fillColor;
 	private int index;
 	private boolean animatingFlag = false;
+	private String timeText="";
 
 	public BaseButton(Context context, String strokeColor, String fillColor) {
 		super(context);
@@ -31,6 +32,7 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 			Util.getScreenWidth()/2,
 			Util.getScreenHeight()/2);
 		this.setGravity(Gravity.CENTER);
+		this.setGravity(Gravity.CENTER_HORIZONTAL);
 		this.setBackgroundDrawable(null);
 		this.setLayoutParams(layoutParams);
 		this.stokeColor = strokeColor;
@@ -70,15 +72,29 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 			circlePaint.setStyle(Paint.Style.FILL);
 			canvas.drawCircle(width/2, height/2, r, circlePaint);
 		}
-		super.onDraw(canvas);
+		circlePaint.setStyle(Paint.Style.FILL);
+		circlePaint.setTextSize(40);
+		circlePaint.setColor(Color.DKGRAY);
+		circlePaint.setTextAlign(Paint.Align.CENTER);
+		canvas.drawText(getText().toString(), width / 2, height / 2, circlePaint);
+		canvas.drawText(getTimeText(), width / 2, height / 2 + 50, circlePaint);
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		switch (event.getAction()){
 			case MotionEvent.ACTION_DOWN:
-				ACTION_DOWN = true;
-				invalidate();
+				int x = (int) event.getX();
+				int y = (int) event.getY();
+				int width =  getMeasuredWidth();
+				int height = getMeasuredHeight();
+				int r = width < height ? width*3/8 : height*3/8;
+				if(((x-width/2)^2) + ((y-height/2)^2) < (r^2)){
+					ACTION_DOWN = true;
+					invalidate();
+				} else {
+					return true;
+				}
 				break;
 			case MotionEvent.ACTION_UP:
 				ACTION_DOWN = false;
@@ -89,27 +105,6 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 	}
 
 
-
-	private void startAnimation(float startPoint){
-		ValueAnimator animator = ObjectAnimator.ofFloat(this, "TranslationY", 0, 300);
-		animator.setDuration(2000);
-		animator.addUpdateListener(this);
-		animator.start();
-	}
-
-
-	@Override
-	public void onAnimationUpdate(ValueAnimator animation) {
-		float value = (Float)animation.getAnimatedValue();
-//		DebugConfig.log("animation is called");
-//		TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
-//			(int) (Util.getScreenWidth() * (1 + value) / 2),
-//			(int) (Util.getScreenHeight() * (1 + value) / 2));
-//		layoutParams.gravity = Gravity.CENTER;
-//		setLayoutParams(layoutParams);
-//		requestLayout();
-		invalidate();
-	}
 
 	public void setIndex(int index){
 		this.index  = index;
@@ -125,5 +120,14 @@ public class BaseButton extends Button implements ValueAnimator.AnimatorUpdateLi
 
 	public boolean getAnimatingFlag(){
 		return animatingFlag;
+	}
+
+	public void setTimeText(String timeText){
+		this.timeText = timeText;
+		invalidate();
+	}
+
+	public String getTimeText(){
+		return timeText;
 	}
 }

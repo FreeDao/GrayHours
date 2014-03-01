@@ -47,7 +47,6 @@ public class CustomParentLayout extends ViewGroup{
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		CustomRowLayout rowLayout1 = (CustomRowLayout) getChildAt(0);
 		CustomRowLayout rowLayout2 = (CustomRowLayout) getChildAt(1);
-		DebugConfig.log("rowLayout1 height:" + rowLayout1.getMeasuredHeight());
 		if (rowLayout1.getMeasuredHeight() > rowLayout2.getMeasuredHeight()){
 			rowLayout1.layout(0, 0, rowLayout1.getMeasuredWidth(), rowLayout1.getMeasuredHeight());
 			rowLayout2.layout(0, rowLayout1.getMeasuredHeight(), rowLayout2.getMeasuredWidth(),

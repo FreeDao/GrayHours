@@ -62,8 +62,7 @@ public class CustomRowLayout extends ViewGroup{
 			case 2:
 				BaseButton child1 = (BaseButton)getChildAt(0);
 				BaseButton child2 = (BaseButton)getChildAt(1);
-				if (child1.getAnimatingFlag()||child2.getAnimatingFlag()){
-					if(child1.getAnimatingFlag()){
+					if(child1.getMeasuredWidth() > child2.getMeasuredWidth()){
 						child1.layout(0, 0, child1.getMeasuredWidth(), child1.getMeasuredHeight());
 						child2.layout(child1.getMeasuredWidth(), 0,
 							child1.getMeasuredWidth() + child2.getMeasuredWidth(), child2.getMeasuredHeight());
@@ -73,13 +72,6 @@ public class CustomRowLayout extends ViewGroup{
 						child1.layout(getMeasuredWidth() - child2.getMeasuredWidth() - child1.getMeasuredWidth(), 0,
 							getMeasuredWidth() - child2.getMeasuredWidth(), child1.getMeasuredHeight());
 					}
-
-				} else {
-					child1.layout(0, 0, child1.getMeasuredWidth(), child1.getMeasuredHeight());
-					child2.layout(child1.getMeasuredWidth(), 0,
-						getMeasuredWidth(), child2.getMeasuredHeight());
-
-				}
 				break;
 		}
 	}
