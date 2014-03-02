@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="55dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:padding="5dp"
@@ -12,11 +12,10 @@
                 android:background="@drawable/widget_backgroud">
 	<TextView
 		android:textColor="@color/ivory"
-		android:textSize="15sp"
+		android:textSize="17sp"
 		android:layout_width="80dp"
 		android:layout_height="wrap_content"
 		android:layout_alignTop="@+id/start_button"
-		android:layout_marginBottom="2dp"
 		android:id="@+id/task_name_text"/>
 
 	<TextView
@@ -26,9 +25,8 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBottom="@id/start_button"
-		android:layout_marginTop="2dp"
 		android:id="@+id/time_text"/>
-	<ImageButton
+	<ImageView
 		android:layout_alignParentRight="true"
 		android:layout_width="50dp"
 		android:layout_height="50dp"

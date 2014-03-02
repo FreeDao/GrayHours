@@ -45,11 +45,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 
 		root.addView(new CustomRowLayout(getActivity()));
 		root.addView(new CustomRowLayout(getActivity()));
-
-
 		buildView(root);
-
-
 		return root;
 	}
 
@@ -57,7 +53,6 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-
 	}
 
 
