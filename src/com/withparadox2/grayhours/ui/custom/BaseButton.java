@@ -1,17 +1,12 @@
 package com.withparadox2.grayhours.ui.custom;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
 import android.widget.Button;
-import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 /**
@@ -19,24 +14,19 @@ import com.withparadox2.grayhours.utils.Util;
  */
 public class BaseButton extends Button{
 	protected boolean ACTION_DOWN = false;
-	private boolean clickOnce = false;
-	private String stokeColor;
-	private String fillColor;
 	private int index;
-	private boolean animatingFlag = false;
 	private String timeText="";
+	private String baseColor;
+	private final static String TRANSPRARENT_VALUE = "33";
 
-	public BaseButton(Context context, String strokeColor, String fillColor) {
+	private Paint paint;
+
+
+	public BaseButton(Context context, String color) {
 		super(context);
-//		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-//			Util.getScreenWidth()/2,
-//			Util.getScreenHeight()/2);
-		this.setGravity(Gravity.CENTER);
-		this.setGravity(Gravity.CENTER_HORIZONTAL);
 		this.setBackgroundDrawable(null);
-//		this.setLayoutParams(layoutParams);
-		this.stokeColor = strokeColor;
-		this.fillColor = fillColor;
+		this.baseColor = color.substring(1);
+		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	}
 
 	public BaseButton(Context context, AttributeSet attrs) {
@@ -47,6 +37,34 @@ public class BaseButton extends Button{
 		super(context, attrs, defStyle);
 	}
 
+	private Paint getCircleStrokePaint(){
+		paint.setStyle(Paint.Style.STROKE);
+		paint.setStrokeWidth(2);
+		paint.setColor(Color.parseColor(getStokeColor()));
+		return paint;
+	}
+
+	private Paint getCircleFilledPaint(){
+		paint.setColor(Color.parseColor(getFilledColor()));
+		paint.setStyle(Paint.Style.FILL);
+		return paint;
+	}
+
+	private String getStokeColor(){
+		return "#" + baseColor;
+	}
+
+	private String getFilledColor(){
+		return "#" + TRANSPRARENT_VALUE + baseColor;
+	}
+
+	private Paint getTextPaint(){
+		paint.setStyle(Paint.Style.FILL);
+		paint.setTextSize(40);
+		paint.setColor(Color.DKGRAY);
+		paint.setTextAlign(Paint.Align.CENTER);
+		return paint;
+	}
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY){
@@ -60,41 +78,20 @@ public class BaseButton extends Button{
 	protected void onDraw(Canvas canvas) {
 		float width =  getMeasuredWidth();
 		float height = getMeasuredHeight();
-
 		float r = width < height ? width*3/8 : height*3/8;
-		Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		circlePaint.setStyle(Paint.Style.STROKE);
-		circlePaint.setStrokeWidth(2);
-		circlePaint.setColor(Color.parseColor(stokeColor));
-		canvas.drawCircle(width/2, height/2, r, circlePaint);
+		canvas.drawCircle(width/2, height/2, r, getCircleStrokePaint());
 		if (ACTION_DOWN){
-			circlePaint.setColor(Color.parseColor(fillColor));
-			circlePaint.setStyle(Paint.Style.FILL);
-			canvas.drawCircle(width/2, height/2, r, circlePaint);
+			canvas.drawCircle(width/2, height/2, r, getCircleFilledPaint());
 		}
-		circlePaint.setStyle(Paint.Style.FILL);
-		circlePaint.setTextSize(40);
-		circlePaint.setColor(Color.DKGRAY);
-		circlePaint.setTextAlign(Paint.Align.CENTER);
-		canvas.drawText(getText().toString(), width / 2, height / 2, circlePaint);
-		canvas.drawText(getTimeText(), width / 2, height / 2 + 50, circlePaint);
+		canvas.drawText(getText().toString(), width / 2, height / 2, getTextPaint());
+		canvas.drawText(getTimeText(), width / 2, height / 2 + 50, getTextPaint());
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		switch (event.getAction()){
 			case MotionEvent.ACTION_DOWN:
-				int x = (int) event.getX();
-				int y = (int) event.getY();
-				int width =  getMeasuredWidth();
-				int height = getMeasuredHeight();
-				int r = width < height ? width*3/8 : height*3/8;
-				if(((x-width/2)^2) + ((y-height/2)^2) < (r^2)){
-					ACTION_DOWN = true;
-					invalidate();
-				} else {
-					return true;
-				}
+				ACTION_DOWN = true;
 				break;
 			case MotionEvent.ACTION_UP:
 				ACTION_DOWN = false;
@@ -112,14 +109,6 @@ public class BaseButton extends Button{
 
 	public int getIndex(){
 		return index;
-	}
-
-	public void setAnimatingFlag(boolean flag){
-		animatingFlag = flag;
-	}
-
-	public boolean getAnimatingFlag(){
-		return animatingFlag;
 	}
 
 	public void setTimeText(String timeText){

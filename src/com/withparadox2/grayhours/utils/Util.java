@@ -95,4 +95,8 @@ public class Util {
 		screenHeight = height;
 	}
 
+	public static String getColorResources(int id){
+		return String.valueOf(GlobalContext.getInstance().getResources().getColor(id));
+	}
+
 }

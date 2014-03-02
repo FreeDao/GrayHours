@@ -131,20 +131,41 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 	}
 
 	private void setAddTaskButtonView(CustomRowLayout row){
-		AddTaskButton addTaskButton = new AddTaskButton(getActivity());
+		AddTaskButton addTaskButton = new AddTaskButton(getActivity(), Util.getColorResources(R.color.royalblue));
 		addTaskButton.setOnClickListener(new AddOnClickListener());
 		addTaskButton.setText("add");
 		row.addView(addTaskButton);
 	}
 
 	private void setTaskButtonView(CustomRowLayout row, int index){
-		TaskButton taskButton = new TaskButton(getActivity());
+		TaskButton taskButton = new TaskButton(getActivity(), getColorBasesOnIndex(index));
 		taskButton.setIndex(index);
 		taskButton.setOnClickListener(new StratWorkOnClickListener());
 		taskButton.setText(taskBeanList.get(index).getName());
 		taskButton.setTimeText(Util.convertSecondsToHours(Integer.parseInt(taskBeanList.get(index).getTotalTime())));
 		row.addView(taskButton);
 	}
+
+	private String getColorBasesOnIndex(int index){
+		String color = getResources().getString(R.color.hotpink);
+		switch (index){
+			case 0:
+				color = getResources().getString(R.color.hotpink);
+			break;
+			case 1:
+				color = getResources().getString(R.color.darker_purple);
+			break;
+			case 2:
+				color = getResources().getString(R.color.crimson);
+			break;
+			case 3:
+				color = getResources().getString(R.color.goldenrod);
+			break;
+		}
+		return color;
+	}
+
+
 
 
 	private void startAnimator(){

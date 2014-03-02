@@ -12,6 +12,8 @@ public class DebugConfig {
 	}
 
 	public static void log(String message){
-		Log.d("grayhours", message);
+		if(debug){
+			Log.d("grayhours", message);
+		}
 	}
 }

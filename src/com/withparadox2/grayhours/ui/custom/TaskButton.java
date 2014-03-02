@@ -18,8 +18,8 @@ import com.withparadox2.grayhours.utils.Util;
 public class TaskButton extends BaseButton{
 
 
-	public TaskButton(Context context) {
-		super(context, "#FF0000", "#22FF0000");
+	public TaskButton(Context context, String color) {
+		super(context, color);
 	}
 
 	public TaskButton(Context context, AttributeSet attrs) {
