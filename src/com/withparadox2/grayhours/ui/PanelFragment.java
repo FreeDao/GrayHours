@@ -131,7 +131,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 	}
 
 	private void setAddTaskButtonView(CustomRowLayout row){
-		AddTaskButton addTaskButton = new AddTaskButton(getActivity(), Util.getColorResources(R.color.royalblue));
+		AddTaskButton addTaskButton = new AddTaskButton(getActivity(), getResources().getString(R.color.royalblue));
 		addTaskButton.setOnClickListener(new AddOnClickListener());
 		addTaskButton.setText("add");
 		row.addView(addTaskButton);

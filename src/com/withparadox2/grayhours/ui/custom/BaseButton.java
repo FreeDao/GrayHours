@@ -15,17 +15,16 @@ import com.withparadox2.grayhours.utils.Util;
 public class BaseButton extends Button{
 	protected boolean ACTION_DOWN = false;
 	private int index;
-	private String timeText="";
-	private String baseColor;
-	private final static String TRANSPRARENT_VALUE = "33";
+	private String timeText = "";//if not set to empty,gh will crash in addbutton
+	protected String baseColor;
 
-	private Paint paint;
+	protected Paint paint;
 
 
 	public BaseButton(Context context, String color) {
 		super(context);
 		this.setBackgroundDrawable(null);
-		this.baseColor = color.substring(1);
+		this.baseColor = color;
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	}
 
@@ -37,25 +36,17 @@ public class BaseButton extends Button{
 		super(context, attrs, defStyle);
 	}
 
-	private Paint getCircleStrokePaint(){
+	protected Paint getCircleStrokePaint(){
 		paint.setStyle(Paint.Style.STROKE);
 		paint.setStrokeWidth(2);
-		paint.setColor(Color.parseColor(getStokeColor()));
+		paint.setColor(Color.parseColor(baseColor));
 		return paint;
 	}
 
-	private Paint getCircleFilledPaint(){
-		paint.setColor(Color.parseColor(getFilledColor()));
+	protected Paint getCircleFilledPaint(){
+		paint.setAlpha(50);
 		paint.setStyle(Paint.Style.FILL);
 		return paint;
-	}
-
-	private String getStokeColor(){
-		return "#" + baseColor;
-	}
-
-	private String getFilledColor(){
-		return "#" + TRANSPRARENT_VALUE + baseColor;
 	}
 
 	private Paint getTextPaint(){
@@ -92,6 +83,7 @@ public class BaseButton extends Button{
 		switch (event.getAction()){
 			case MotionEvent.ACTION_DOWN:
 				ACTION_DOWN = true;
+				invalidate();
 				break;
 			case MotionEvent.ACTION_UP:
 				ACTION_DOWN = false;
