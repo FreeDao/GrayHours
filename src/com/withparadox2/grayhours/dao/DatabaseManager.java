@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 14-2-20.
+ * Created by withparadox2 on 14-2-20.
  */
 public class DatabaseManager {
 	private static final String TAG = DatabaseManager.class.getName();
