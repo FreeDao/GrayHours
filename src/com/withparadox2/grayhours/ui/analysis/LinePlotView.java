@@ -6,12 +6,12 @@ import android.graphics.Paint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
-import android.widget.ListView;
 import com.withparadox2.grayhours.R;
+import com.withparadox2.grayhours.support.AnalysisTool;
 import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
+
+import java.util.Map;
 
 /**
  * Created by withparadox2 on 14-3-3.
@@ -29,6 +29,9 @@ public class LinePlotView extends View{
 	private float widthOfView;
 	private float heightOfView;
 
+	private int index = 0;
+	private Map<Integer, Integer> map;
+
 	public LinePlotView(Context context) {
 		this(context, null, 0);
 	}
@@ -39,6 +42,11 @@ public class LinePlotView extends View{
 
 	public LinePlotView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		initialPaint();
+		map = AnalysisTool.getDataMap(index);
+	}
+
+	private void initialPaint(){
 		gridPaint = new Paint();
 		labelPaint = new Paint();
 		dataLinePaint = new Paint();
@@ -60,6 +68,8 @@ public class LinePlotView extends View{
 		drawVerticalLabel(canvas, labelPaint);
 	}
 
+
+
 	private void drawBackgroundGrid(Canvas canvas, Paint paint){
 		float cellHeight = (heightOfView - gridLinePaddintBottom - gridLinePaddintTop)/12;
 		float cellWidth = (widthOfView - gridLinePaddintLeft)/7;
@@ -79,5 +89,9 @@ public class LinePlotView extends View{
 		for (int i=0; i<=6; i++){
 			canvas.drawText(String.valueOf(i*4), gridLinePaddintLeft/2, gridLinePaddintTop + cellHeight*(6-i)+5, paint);
 		}
+	}
+
+	public void setIndex(int index){
+		this.index = index;
 	}
 }

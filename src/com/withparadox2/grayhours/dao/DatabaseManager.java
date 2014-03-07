@@ -82,25 +82,22 @@ public class DatabaseManager {
 		database.update(TaskTable.TABLE_NAME, values, TaskTable.KEY_ID + "=" + id, null);
 	}
 
-	public List<TaskBean> getWorkList(){
-		String sql = "select * from " + TaskTable.TABLE_NAME;
+	public List<WorkBean> getWorkListByIndex(int index){
+		String sql = "select * from " + WorkTable.getWorkTableName(index);
 		Cursor cursor = database.rawQuery(sql, null);
-		List<TaskBean> list = new ArrayList<TaskBean>();
+		List<WorkBean> list = new ArrayList<WorkBean>();
 		while (cursor.moveToNext()){
-			TaskBean taskBean = new TaskBean();
-			int columnIndex = cursor.getColumnIndex(TaskTable.KEY_ID);
-			taskBean.setId(cursor.getLong(columnIndex));
+			WorkBean workBean = new WorkBean();
+			int columnIndex = cursor.getColumnIndex(WorkTable.KEY_ID);
+			workBean.setId(cursor.getLong(columnIndex));
 
-			columnIndex = cursor.getColumnIndex(TaskTable.KEY_NAME);
-			taskBean.setName(cursor.getString(columnIndex));
+			columnIndex = cursor.getColumnIndex(WorkTable.KEY_DATE);
+			workBean.setDate(cursor.getString(columnIndex));
 
-			columnIndex = cursor.getColumnIndex(TaskTable.KEY_START_TIME);
-			taskBean.setStartTime(cursor.getString(columnIndex));
+			columnIndex = cursor.getColumnIndex(WorkTable.KEY_TOTAL_TIME_A_DAY);
+			workBean.setTotalTime(cursor.getString(columnIndex));
 
-			columnIndex = cursor.getColumnIndex(TaskTable.KEY_TOTAL_TIME);
-			taskBean.setTotalTime(cursor.getString(columnIndex));
-
-			list.add(taskBean);
+			list.add(workBean);
 		}
 		cursor.close();
 		return list;
