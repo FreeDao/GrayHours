@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 /**
- * Created by Administrator on 14-2-26.
+ * Created by withparadox2 on 14-2-26.
  */
 public class TaskListActivity extends Activity{
 	private ListView listView;
@@ -31,7 +31,6 @@ public class TaskListActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		listView = new ListView(this);
 		that = this;
-
 		listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getList()));
 		setContentView(listView);
 		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

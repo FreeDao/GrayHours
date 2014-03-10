@@ -2,12 +2,11 @@ package com.withparadox2.grayhours.support;
 
 import com.withparadox2.grayhours.bean.WorkBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
-import com.withparadox2.grayhours.dao.WorkTable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by withparadox2 on 14-3-3.
@@ -19,10 +18,21 @@ public class AnalysisTool {
 		List<WorkBean> workList = DatabaseManager.getInstanse().getWorkListByIndex(index);
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for(WorkBean workBean:workList){
-			dateInterval = CalenDarTool.getDateIntervalFromBase(workBean.getDate());
+			dateInterval = CalendarTool.getDateIntervalFromBase(workBean.getDate());
 			totalMinutes = Integer.parseInt(workBean.getTotalTime());
 			map.put(dateInterval, totalMinutes);
 		}
+		return map;
+	}
+
+	public static Map<Integer, Integer> getDataMapTest(int index){
+		Random random = new Random();
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i=0; i<10; i++){
+			map.put(CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i)),
+				random.nextInt(24*60));
+		}
+
 		return map;
 	}
 }

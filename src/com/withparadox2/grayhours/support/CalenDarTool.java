@@ -3,12 +3,13 @@ package com.withparadox2.grayhours.support;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Created by withparadox2 on 14-3-7.
  */
-public class CalenDarTool {
+public class CalendarTool {
 	private final static String BASE_DATE = "2014-00-00";
 	public static int getDateIntervalFromBase(String date){
 		int result = 0;
@@ -21,6 +22,19 @@ public class CalenDarTool {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	public static String getCurrentDate(){
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return simpleDateFormat.format(calendar.getTime());
+	}
+
+	public static String getDateFromToday(int x){
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DATE, x);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return simpleDateFormat.format(calendar.getTime());
 	}
 
 }
