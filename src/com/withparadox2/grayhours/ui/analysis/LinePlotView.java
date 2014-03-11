@@ -1,21 +1,27 @@
 package com.withparadox2.grayhours.ui.analysis;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.support.AnalysisTool;
 import com.withparadox2.grayhours.support.CalendarTool;
+import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by withparadox2 on 14-3-3.
  */
-public class LinePlotView extends View{
+public class LinePlotView extends View implements ValueAnimator.AnimatorUpdateListener{
 	private Paint gridPaint;
 	private Paint labelPaint;
 	private Paint dataLinePaint;
@@ -32,8 +38,14 @@ public class LinePlotView extends View{
 	private float cellWidth;
 	private float cellHeight;
 
+	private float scrollOffSet = 0f;
+
 	private int index = 0;
 	private Map<Integer, Integer> map;
+
+	private GestureDetector gestureDetector;
+
+	private Animator animator;
 
 	public LinePlotView(Context context) {
 		this(context, null, 0);
@@ -47,6 +59,14 @@ public class LinePlotView extends View{
 		super(context, attrs, defStyle);
 		initialPaint();
 		map = AnalysisTool.getDataMapTest(0);
+		gestureDetector = new GestureDetector(context, new MyOnGestureListener());
+		this.setLongClickable(true);
+		this.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return gestureDetector.onTouchEvent(event);
+			}
+		});
 	}
 
 	private void initialPaint(){
@@ -81,8 +101,11 @@ public class LinePlotView extends View{
 			float y = i*cellHeight;
 			canvas.drawLine(gridLinePaddintLeft, y + gridLinePaddintTop, widthOfView - gridLinePaddingRight,  y + gridLinePaddintTop, paint);
 		}
+		float x = 0f;
 		for (int i=0; i<=7; i++){
-			float x = gridLinePaddintLeft + i*cellWidth;
+
+			x = gridLinePaddintLeft + i*cellWidth - scrollOffSet + cellWidth * (int) (scrollOffSet/cellWidth);
+
 			canvas.drawLine(x, gridLinePaddintTop, x, heightOfView - gridLinePaddintBottom, paint);
 		}
 	}
@@ -97,31 +120,67 @@ public class LinePlotView extends View{
 	}
 
 	private void drawHorizontalLabel(Canvas canvas, Paint paint){
+		int scrollCellWidthNum = (int)(scrollOffSet / cellWidth);
 		for (int i=0; i <= 7; i++){
-			canvas.drawText(CalendarTool.getDateFromToday(i).substring(8),
-				gridLinePaddintLeft + cellWidth*i,
+			canvas.drawText(CalendarTool.getDateFromToday(i + scrollCellWidthNum).substring(8),
+				gridLinePaddintLeft + cellWidth*i - scrollOffSet + cellWidth*scrollCellWidthNum,
 				heightOfView - gridLinePaddintBottom/2,
 				paint);
 			if(i > 0){
 				drawDataLine(canvas, paint,
-					CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i)),
-					CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i-1)),
-					gridLinePaddintLeft + i*cellWidth,
-					gridLinePaddintLeft + (i-1)*cellWidth);
+					CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i + scrollCellWidthNum)),
+					CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i-1 + scrollCellWidthNum)),
+					gridLinePaddintLeft + i*cellWidth - scrollOffSet + cellWidth*scrollCellWidthNum,
+					gridLinePaddintLeft + (i-1)*cellWidth - scrollOffSet + cellWidth*scrollCellWidthNum);
 			}
 		}
 	}
 
 	private void drawDataLine(Canvas canvas, Paint paint, int newKey, int oldKey, float newX, float oldX){
+		if (!map.containsKey(newKey)){
+			map.put(newKey,new Random().nextInt(24*60));
+		}
+		if (!map.containsKey(oldKey)){
+			map.put(oldKey,new Random().nextInt(24*60));
+		}
+
 		canvas.drawLine(newX,
-			gridLinePaddintTop + map.get(newKey)/120 * cellHeight,
+			gridLinePaddintTop + map.get(newKey)/120f * cellHeight,
 			oldX,
-			gridLinePaddintTop + map.get(oldKey)/120 * cellHeight,
+			gridLinePaddintTop + map.get(oldKey)/120f * cellHeight,
 			paint);
 	}
 
 
 	public void setIndex(int index){
 		this.index = index;
+	}
+
+	@Override
+	public void onAnimationUpdate(ValueAnimator animation) {
+
+	}
+
+	class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener{
+		@Override
+		public boolean onSingleTapUp(MotionEvent e) {
+			DebugConfig.log("onSingleTapUp has been called");
+			return super.onSingleTapUp(e);
+		}
+
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			scrollOffSet = scrollOffSet + distanceX;
+//			DebugConfig.log("onScroll has been called " + scrollOffSet);
+			invalidate();
+			return super.onScroll(e1, e2, distanceX, distanceY);
+		}
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			DebugConfig.log("onFling has been called");
+			scrollOffSet = scrollOffSet + velocityX;
+			return super.onFling(e1, e2, velocityX, velocityY);
+		}
 	}
 }

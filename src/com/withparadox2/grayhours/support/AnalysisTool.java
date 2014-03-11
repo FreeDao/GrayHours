@@ -28,7 +28,7 @@ public class AnalysisTool {
 	public static Map<Integer, Integer> getDataMapTest(int index){
 		Random random = new Random();
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
-		for (int i=0; i<10; i++){
+		for (int i=-20; i<20; i++){
 			map.put(CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i)),
 				random.nextInt(24*60));
 		}
