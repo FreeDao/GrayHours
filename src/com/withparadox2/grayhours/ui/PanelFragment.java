@@ -8,9 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableRow;
@@ -42,7 +40,6 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		root = new CustomParentLayout(getActivity());
-
 		root.addView(new CustomRowLayout(getActivity()));
 		root.addView(new CustomRowLayout(getActivity()));
 		buildView(root);
@@ -85,6 +82,23 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 		getActivity().unregisterReceiver(broadcastReceiver);
 	}
 
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.panelfragment_menu, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()){
+			case R.id.menu_analysis:
+				Toast.makeText(getActivity(),"asdfasd", Toast.LENGTH_LONG).show();
+				getFragmentManager().beginTransaction().replace(android.R.id.content, new AnalysisFragment()).addToBackStack(null).commit();
+				break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	private void updateList(){
 		taskBeanList = DatabaseManager.getInstanse().getTaskList();
 	}
@@ -120,9 +134,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 				setTaskButtonView(row2, 2);
 				setTaskButtonView(row2, 3);
 				break;
-
 		}
-
 	}
 
 	private void setAddTaskButtonView(CustomRowLayout row){

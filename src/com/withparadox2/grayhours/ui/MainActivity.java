@@ -22,8 +22,8 @@ public class MainActivity extends Activity {
 		Fragment fragmentToStart;
 		actionBar.setIcon(android.R.color.transparent);
 
-//		fragmentToStart = new PanelFragment();
-		fragmentToStart = new AnalysisFragment();
+		fragmentToStart = new PanelFragment();
+//		fragmentToStart = new AnalysisFragment();
 		getFragmentManager()
 				.beginTransaction()
 				.replace(android.R.id.content,fragmentToStart)

@@ -3,4 +3,6 @@
 	<string name="app_name">GrayHours</string>
 	<string name="start">开始</string>
 	<string name="widget_mask_info">点击开始</string>
+
+	<string name="menu_analysis">分析</string>
 </resources>

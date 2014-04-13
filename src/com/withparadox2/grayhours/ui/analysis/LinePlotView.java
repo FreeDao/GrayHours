@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -25,11 +27,11 @@ public class LinePlotView extends View implements ValueAnimator.AnimatorUpdateLi
 	private Paint gridPaint;
 	private Paint labelPaint;
 	private Paint dataLinePaint;
+	private Paint framePaint;
 
-	private int gridLinePaddintLeft = Util.dip2px(20);
-	private int gridLinePaddintBottom = Util.dip2px(40);
-	private int gridLinePaddintTop = Util.dip2px(20);
-	private int gridLinePaddingRight = 1;
+	private int mLabelSeparation;
+	private int mLabelWidth;
+	private int mLabelHeight;
 
 
 	private float widthOfView;
@@ -45,7 +47,7 @@ public class LinePlotView extends View implements ValueAnimator.AnimatorUpdateLi
 
 	private GestureDetector gestureDetector;
 
-	private Animator animator;
+	private Rect contentRect = new Rect();
 
 	public LinePlotView(Context context) {
 		this(context, null, 0);
@@ -69,87 +71,127 @@ public class LinePlotView extends View implements ValueAnimator.AnimatorUpdateLi
 		});
 	}
 
+	private void initialLength() {
+		widthOfView = getWidth();
+		heightOfView = getHeight();
+
+		cellHeight = contentRect.height()/12;
+		cellWidth = contentRect.width()/7;
+	}
+
 	private void initialPaint(){
 		gridPaint = new Paint();
 		labelPaint = new Paint();
 		dataLinePaint = new Paint();
+		framePaint = new Paint();
 
 		gridPaint.setColor(getResources().getColor(R.color.grid_line_color));
 		gridPaint.setStyle(Paint.Style.STROKE);
 		gridPaint.setStrokeWidth(1f);
+
 		labelPaint.setColor(getResources().getColor(R.color.label_color));
 		labelPaint.setTextAlign(Paint.Align.CENTER);
 		labelPaint.setTextSize(Util.sp2px(13));
+
+		mLabelHeight = (int) Math.abs(labelPaint.getFontMetrics().top);
+		mLabelWidth = Util.dip2px(18);
+		mLabelSeparation = 2;
+
 		dataLinePaint.setColor(getResources().getColor(R.color.data_line_color));
+
+		framePaint.setColor(getResources().getColor(R.color.coral));
+		framePaint.setStyle(Paint.Style.STROKE);
+		framePaint.setStrokeWidth(3f);
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		widthOfView = getMeasuredWidth();
-		heightOfView = getMeasuredHeight();
-		drawBackgroundGrid(canvas, gridPaint);
+		initialLength();
+
 		drawVerticalLabel(canvas, labelPaint);
 		drawHorizontalLabel(canvas, labelPaint);
+		canvas.drawRect(contentRect, framePaint);
+
+		canvas.clipRect(contentRect);
+//		drawDataLine(canvas, labelPaint);
+		drawBackgroundGrid(canvas, gridPaint);
+		canvas.restore();
+
 	}
 
-
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+		super.onSizeChanged(w, h, oldw, oldh);
+		contentRect.set(
+				mLabelWidth + mLabelSeparation + getPaddingLeft(),
+				getPaddingTop(),
+				getWidth() - getPaddingRight(),
+				getHeight() - mLabelHeight - mLabelSeparation - getPaddingBottom());
+	}
 
 	private void drawBackgroundGrid(Canvas canvas, Paint paint){
-		cellHeight = (heightOfView - gridLinePaddintBottom - gridLinePaddintTop)/12;
-		cellWidth = (widthOfView - gridLinePaddintLeft - gridLinePaddingRight)/7;
-		for (int i=0; i<=12; i++){
-			float y = i*cellHeight;
-			canvas.drawLine(gridLinePaddintLeft, y + gridLinePaddintTop, widthOfView - gridLinePaddingRight,  y + gridLinePaddintTop, paint);
+		float y = contentRect.top;
+		for (int i=0; i<=11; i++){
+			canvas.drawLine(contentRect.left, y, contentRect.right, y, paint);
+			y += cellHeight;
 		}
-		float x = 0f;
+		float x = contentRect.left - scrollOffSet + cellWidth * (int) (scrollOffSet/cellWidth);
 		for (int i=0; i<=7; i++){
-
-			x = gridLinePaddintLeft + i*cellWidth - scrollOffSet + cellWidth * (int) (scrollOffSet/cellWidth);
-
-			canvas.drawLine(x, gridLinePaddintTop, x, heightOfView - gridLinePaddintBottom, paint);
+			canvas.drawLine(x, contentRect.top, x, contentRect.bottom, paint);
+			x += cellWidth;
 		}
 	}
 
 	private void drawVerticalLabel(Canvas canvas, Paint paint){
+		float height = 10f + contentRect.top;
 		for (int i=0; i<=6; i++){
 			canvas.drawText(String.valueOf(24-(i*4)),
-				gridLinePaddintLeft/2,
-				gridLinePaddintTop + cellHeight*2*i+5,
-				paint);
+					mLabelWidth/2,
+					height,
+					paint);
+			height += cellHeight*2;
 		}
 	}
 
 	private void drawHorizontalLabel(Canvas canvas, Paint paint){
 		int scrollCellWidthNum = (int)(scrollOffSet / cellWidth);
-		for (int i=0; i <= 7; i++){
+		float width = contentRect.left - scrollOffSet + cellWidth*scrollCellWidthNum;
+		for (int i=0; i < 7; i++){
 			canvas.drawText(CalendarTool.getDateFromToday(i + scrollCellWidthNum).substring(8),
-				gridLinePaddintLeft + cellWidth*i - scrollOffSet + cellWidth*scrollCellWidthNum,
-				heightOfView - gridLinePaddintBottom/2,
-				paint);
-			if(i > 0){
-				drawDataLine(canvas, paint,
-					CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i + scrollCellWidthNum)),
-					CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i-1 + scrollCellWidthNum)),
-					gridLinePaddintLeft + i*cellWidth - scrollOffSet + cellWidth*scrollCellWidthNum,
-					gridLinePaddintLeft + (i-1)*cellWidth - scrollOffSet + cellWidth*scrollCellWidthNum);
+					width ,
+					getHeight(),
+					paint);
+			width += cellWidth;
+		}
+	}
+
+/*	private void drawDataLine(Canvas canvas, Paint paint){
+		int scrollCellWidthNum = (int)(scrollOffSet / cellWidth);
+		int newKey, oldKey;
+		float newX, oldX;
+		for (int i=0; i <= 8; i++){
+			newKey = CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i + scrollCellWidthNum));
+			oldKey = CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i-1 + scrollCellWidthNum));
+			newX = gridLinePaddintLeft + i*cellWidth - scrollOffSet + cellWidth*scrollCellWidthNum;
+			oldX = gridLinePaddintLeft + (i-1)*cellWidth - scrollOffSet + cellWidth*scrollCellWidthNum;
+			if (!map.containsKey(newKey)){
+				map.put(newKey,new Random().nextInt(24*60));
 			}
-		}
-	}
+			if (!map.containsKey(oldKey)){
+				map.put(oldKey,new Random().nextInt(24*60));
+			}
 
-	private void drawDataLine(Canvas canvas, Paint paint, int newKey, int oldKey, float newX, float oldX){
-		if (!map.containsKey(newKey)){
-			map.put(newKey,new Random().nextInt(24*60));
-		}
-		if (!map.containsKey(oldKey)){
-			map.put(oldKey,new Random().nextInt(24*60));
+
+			canvas.drawLine(newX,
+					gridLinePaddintTop + map.get(newKey)/120f * cellHeight,
+					oldX,
+					gridLinePaddintTop + map.get(oldKey)/120f * cellHeight,
+					paint);
+
 		}
 
-		canvas.drawLine(newX,
-			gridLinePaddintTop + map.get(newKey)/120f * cellHeight,
-			oldX,
-			gridLinePaddintTop + map.get(oldKey)/120f * cellHeight,
-			paint);
-	}
+
+	}*/
 
 
 	public void setIndex(int index){
@@ -176,11 +218,11 @@ public class LinePlotView extends View implements ValueAnimator.AnimatorUpdateLi
 			return super.onScroll(e1, e2, distanceX, distanceY);
 		}
 
-		@Override
-		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-			DebugConfig.log("onFling has been called");
-			scrollOffSet = scrollOffSet + velocityX;
-			return super.onFling(e1, e2, velocityX, velocityY);
-		}
+//		@Override
+//		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+//			DebugConfig.log("onFling has been called");
+//			scrollOffSet = scrollOffSet + velocityX;
+//			return super.onFling(e1, e2, velocityX, velocityY);
+//		}
 	}
 }
