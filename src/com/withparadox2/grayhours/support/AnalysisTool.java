@@ -32,7 +32,8 @@ public class AnalysisTool {
 			map.put(CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(i)),
 				random.nextInt(24*60));
 		}
-
 		return map;
 	}
+
+
 }

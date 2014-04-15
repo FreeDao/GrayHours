@@ -5,5 +5,11 @@
 	      android:title="@string/menu_analysis"
 		android:icon="@android:drawable/ic_dialog_info"
 		android:showAsAction="ifRoom"/>
+	<item android:id="@+id/menu_test"
+	      android:title="test"
+	      android:icon="@android:drawable/ic_media_play"
+	      android:showAsAction="ifRoom"/>
+
+
 
 </menu>

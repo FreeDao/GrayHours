@@ -16,12 +16,14 @@ import android.widget.Toast;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
+import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.ui.custom.*;
 import com.withparadox2.grayhours.utils.CustomAction;
 import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by withparadox2 on 14-2-20.
@@ -94,6 +96,16 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 			case R.id.menu_analysis:
 				Toast.makeText(getActivity(),"asdfasd", Toast.LENGTH_LONG).show();
 				getFragmentManager().beginTransaction().replace(android.R.id.content, new AnalysisFragment()).addToBackStack(null).commit();
+				break;
+			case R.id.menu_test:
+				Random random = new Random();
+				for(int i=0; i<1000; i++){
+					if(i%30 == 0){
+						DatabaseManager.getInstanse().writeSingleToDatabaseForTest(-i, 0);
+					} else {
+						DatabaseManager.getInstanse().writeSingleToDatabaseForTest(-i, random.nextInt(15*60));
+					}
+				}
 				break;
 		}
 		return super.onOptionsItemSelected(item);

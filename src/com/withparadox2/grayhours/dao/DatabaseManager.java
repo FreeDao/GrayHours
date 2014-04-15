@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.bean.WorkBean;
+import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.utils.GlobalContext;
 import com.withparadox2.grayhours.utils.Util;
 
@@ -152,6 +153,8 @@ public class DatabaseManager {
 		database.execSQL(sql);
 	}
 
-
+	public void writeSingleToDatabaseForTest(int i, int totalTime){
+		addWork(0, CalendarTool.getDateFromToday(i), String.valueOf(totalTime));
+	}
 
 }
