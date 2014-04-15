@@ -3,6 +3,7 @@ package com.withparadox2.grayhours.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
@@ -105,5 +106,11 @@ public class Util {
 
 	public static void setScreenHeight(int height){
 		screenHeight = height;
+	}
+
+	public static Typeface getFontFace(){
+		Typeface face = Typeface.createFromAsset(GlobalContext.getInstance().getAssets(),
+				"HelveticaNeueLight.otf");
+		return face;
 	}
 }

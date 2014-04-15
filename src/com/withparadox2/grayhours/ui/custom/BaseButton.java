@@ -26,7 +26,7 @@ public class BaseButton extends Button{
 		this.setBackgroundDrawable(null);
 		this.baseColor = color;
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		
+
 	}
 
 	public BaseButton(Context context, AttributeSet attrs) {
@@ -55,6 +55,7 @@ public class BaseButton extends Button{
 		paint.setTextSize(40);
 		paint.setColor(Color.DKGRAY);
 		paint.setTextAlign(Paint.Align.CENTER);
+		paint.setTypeface(Util.getFontFace());
 		return paint;
 	}
 	@Override
