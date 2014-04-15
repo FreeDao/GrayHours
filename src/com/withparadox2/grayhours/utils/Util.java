@@ -64,6 +64,18 @@ public class Util {
 		return String.valueOf(minutes/60) + "h" + String.valueOf(minutes%60) + "m";
 	}
 
+	public static String convertMinutesToHours(int minutes){
+		return formatTimeDigits(minutes / 60) + ":" +formatTimeDigits(minutes % 60);
+	}
+	
+	public static String formatTimeDigits(int digits){
+		if(digits < 10){
+			return "0"+String.valueOf(digits);
+		} else {
+			return String.valueOf(digits);
+		}
+	}
+
 	public static Point getScreenSize(){
 		WindowManager windowManager = (WindowManager) GlobalContext.getInstance()
 			.getSystemService(Context.WINDOW_SERVICE);

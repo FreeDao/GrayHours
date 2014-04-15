@@ -94,7 +94,6 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()){
 			case R.id.menu_analysis:
-				Toast.makeText(getActivity(),"asdfasd", Toast.LENGTH_LONG).show();
 				getFragmentManager().beginTransaction().replace(android.R.id.content, new AnalysisFragment()).addToBackStack(null).commit();
 				break;
 			case R.id.menu_test:

@@ -1,8 +1,5 @@
 package com.withparadox2.grayhours.ui.analysis;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
-import android.app.LoaderManager;
 import android.content.Context;
 import android.graphics.*;
 import android.support.v4.view.ViewCompat;
@@ -10,17 +7,14 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.OverScroller;
 import android.widget.Scroller;
 import com.withparadox2.grayhours.R;
-import com.withparadox2.grayhours.support.AnalysisTool;
 import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.support.LoadData;
 import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by withparadox2 on 14-3-3.
@@ -30,6 +24,7 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 	private Paint labelPaint;
 	private Paint dataLinePaint;
 	private Paint framePaint;
+	private Paint coverColumnPaint;
 
 	private Scroller mScroller;
 	private int mLabelSeparation;
@@ -43,7 +38,8 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 	private float cellWidth;
 	private float cellHeight;
 
-	private float scrollOffSet = 0f;
+	private float scrollOffSetX = 0f;
+	private float scrollOffSetY = 0f;
 	private float initiaGridlOffset; //force grid align one line to the center of Rect
 
 	private int index = 0;
@@ -58,6 +54,12 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 	private String dateText;
 
 	private boolean dataAvaiable = false;
+
+	private boolean changeMaxHours = false;
+	private int maxHours = 12;
+	private int tempMaxHours = 100;
+
+	private int intervalHours = 2;
 
 	public LinePlotView(Context context) {
 		this(context, null, 0);
@@ -77,6 +79,16 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				mScroller.forceFinished(true);
+				if(event.getAction() == MotionEvent.ACTION_DOWN){
+					if (event.getX() < contentRect.left && event.getY() > contentRect.top){
+						DebugConfig.log("change hours");
+						scrollOffSetY = 0;
+						changeMaxHours = true;
+					} else {
+						changeMaxHours = false;
+					}
+				}
+
 				return gestureDetector.onTouchEvent(event);
 			}
 		});
@@ -88,10 +100,10 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		widthOfView = getWidth();
 		heightOfView = getHeight();
 
-		cellHeight = contentRect.height()/12f;
+		cellHeight = contentRect.height()/(float)(maxHours/intervalHours);
 		cellWidth = contentRect.width()/7f;
 
-		initiaGridlOffset = cellWidth/2;
+		initiaGridlOffset = -cellWidth/2;
 
 	}
 
@@ -100,6 +112,7 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		labelPaint = new Paint();
 		dataLinePaint = new Paint();
 		framePaint = new Paint();
+		coverColumnPaint = new Paint();
 
 		gridPaint.setColor(getResources().getColor(R.color.grid_line_color));
 		gridPaint.setStyle(Paint.Style.STROKE);
@@ -118,6 +131,10 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		framePaint.setColor(getResources().getColor(R.color.coral));
 		framePaint.setStyle(Paint.Style.STROKE);
 		framePaint.setStrokeWidth(3f);
+
+		coverColumnPaint.setColor(getResources().getColor(R.color.teal));
+		coverColumnPaint.setAlpha(200);
+		coverColumnPaint.setStyle(Paint.Style.FILL);
 	}
 
 	@Override
@@ -128,7 +145,7 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		drawHorizontalLabel(canvas, labelPaint);
 		canvas.drawRect(contentRect, framePaint);
 		canvas.drawLine(contentRect.centerX(), contentRect.top,
-						contentRect.centerX(), contentRect.bottom, framePaint);
+				contentRect.centerX(), contentRect.bottom, framePaint);
 
 		canvas.clipRect(contentRect);
 		if(dataAvaiable){
@@ -154,12 +171,12 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 
 	private void drawBackgroundGrid(Canvas canvas, Paint paint){
 		float y = contentRect.top;
-		for (int i=0; i<=12; i++){
+		for (int i=0, n=2*maxHours/intervalHours; i<=n; i++){
 			canvas.drawLine(contentRect.left, y, contentRect.right, y, paint);
-			y += cellHeight;
+			y += cellHeight/2f;
 		}
-		int scrollCellWidthNum = (int)(scrollOffSet / cellWidth);
-		float x = (float)contentRect.left - scrollOffSet + cellWidth*scrollCellWidthNum + initiaGridlOffset;
+		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
+		float x = (float)contentRect.left - scrollOffSetX + cellWidth*scrollCellWidthNum + initiaGridlOffset;
 		for (int i=0; i<=7; i++){
 			canvas.drawLine(x, contentRect.top, x, contentRect.bottom, paint);
 			x += cellWidth;
@@ -168,18 +185,18 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 
 	private void drawVerticalLabel(Canvas canvas, Paint paint){
 		float height = 10f + contentRect.top;
-		for (int i=0; i<=6; i++){
-			canvas.drawText(String.valueOf(24-(i*4)),
+		for (int i=0,n=maxHours/intervalHours; i<=n; i++){
+			canvas.drawText(String.valueOf(maxHours - i*intervalHours),
 					mLabelWidth/2,
 					height,
 					paint);
-			height += cellHeight*2;
+			height += cellHeight;
 		}
 	}
 
 	private void drawHorizontalLabel(Canvas canvas, Paint paint){
-		int scrollCellWidthNum = (int)(scrollOffSet / cellWidth);
-		float x = contentRect.right - scrollOffSet + cellWidth*scrollCellWidthNum + initiaGridlOffset;
+		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
+		float x = contentRect.right - scrollOffSetX + cellWidth*scrollCellWidthNum + initiaGridlOffset;
 		for (int i=0; i <= 7; i++){
 			canvas.drawText(CalendarTool.getDateFromToday(3 - i + scrollCellWidthNum).substring(8),
 					x ,
@@ -190,20 +207,23 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 	}
 
 	private void drawDataLine(Canvas canvas, Paint paint){
-		int scrollCellWidthNum = (int)(scrollOffSet / cellWidth);
-		float x = contentRect.right - scrollOffSet + cellWidth*scrollCellWidthNum + initiaGridlOffset;
-		dateText = CalendarTool.getDateFromToday(scrollCellWidthNum);
-		Integer timeNew, timeOld;
-		timeNew = map.get(CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(3 + scrollCellWidthNum)));
-
+		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
+		float x = contentRect.right - scrollOffSetX + cellWidth*scrollCellWidthNum - initiaGridlOffset;
+		String dateBase = CalendarTool.getDateFromToday((int)((initiaGridlOffset+ scrollOffSetX) / cellWidth));
+		Integer consumeTime = map.get(CalendarTool.getDateIntervalFromBase(dateBase));
+		dateText = dateBase +"    " + Util.convertMinutesToHours(consumeTime==null ? 0: consumeTime);
+		Integer timeNew = null, timeOld;
+		float heightNew = 20f, heightOld, r;
 		for (int i=0; i <= 8; i++){
-			timeOld = map.get( CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(2-i + scrollCellWidthNum)));
-			if(timeNew != null && timeOld != null){
-				canvas.drawLine(x,
-						contentRect.bottom - timeNew / 120f * cellHeight,
-						x - cellWidth,
-						contentRect.bottom - timeOld / 120f * cellHeight,
-						paint);
+			timeOld = map.get( CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(3-i + scrollCellWidthNum)));
+			if (timeOld != null){
+				heightOld = contentRect.bottom - timeOld /intervalHours/60f * cellHeight;
+				if(timeNew != null){
+					r = (Math.abs(x-contentRect.centerX()) > cellWidth/2) ? 5 : 10;
+					canvas.drawLine(x, heightNew, x - cellWidth, heightOld, paint);
+					canvas.drawCircle(x, heightNew, r, coverColumnPaint);
+				}
+				heightNew = heightOld;
 			}
 			timeNew = timeOld;
 			x -= cellWidth;
@@ -236,7 +256,15 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
 			mScroller.forceFinished(true);
-			scrollOffSet = scrollOffSet + distanceX;
+			if(!changeMaxHours){
+				scrollOffSetX = scrollOffSetX + distanceX;
+			} else {
+				if(distanceY*scrollOffSetY < 0){
+					scrollOffSetY =0;
+				}
+				scrollOffSetY = scrollOffSetY + distanceY;
+				setChangeMaxHours();
+			}
 			ViewCompat.postInvalidateOnAnimation(LinePlotView.this);
 			return true;
 		}
@@ -244,8 +272,47 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			flingStartX = e2.getX();
-			fling((int) -velocityX, (int) -velocityY);
+			if(!changeMaxHours)
+				fling((int) -velocityX, (int) -velocityY);
 			return true;
+		}
+	}
+
+	private void setChangeMaxHours() {
+		int scrollHours = (int)(scrollOffSetY/50f);
+		if(tempMaxHours != scrollHours){
+			if (scrollOffSetY < 0){
+				maxHours = maxHours - 2;
+			} else {
+				maxHours = maxHours + 2;
+			}
+			tempMaxHours = scrollHours;
+		}
+		if (maxHours > 24 ) {
+			maxHours = 24;
+		}
+		if (maxHours < 4) {
+			maxHours = 4;
+		}
+		switch (maxHours){
+			case 24:
+			case 20:
+			case 16:
+				intervalHours = 4;
+				break;
+			case 18:
+				intervalHours = 3;
+				break;
+			case 14:
+			case 12:
+			case 10:
+			case 8:
+				intervalHours = 2;
+				break;
+			case 6:
+			case 4:
+				intervalHours = 1;
+				break;
 		}
 	}
 
@@ -256,12 +323,15 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		// Begins the animation
 		mScroller.fling(
 				// Current scroll position
-				(int) scrollOffSet,
+				(int) scrollOffSetX,
 				0,
 				velocityX,
 				velocityY,
 				(int) (2-map.size()*cellWidth), 0,
 				0, 0);
+		float ds = mScroller.getFinalX();
+		int scrollCellWidthNum = (int)(ds / cellWidth);
+		mScroller.setFinalX((int) (cellWidth*scrollCellWidthNum));
 		// Invalidates to trigger computeScroll()
 		ViewCompat.postInvalidateOnAnimation(this);
 	}
@@ -270,9 +340,8 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 	public void computeScroll() {
 		super.computeScroll();
 		if (mScroller.computeScrollOffset()) {
-			scrollOffSet = mScroller.getCurrX();
+			scrollOffSetX = mScroller.getCurrX();
 			ViewCompat.postInvalidateOnAnimation(this);
 		}
-//		DebugConfig.log("onFling has been called " +  mScroller.getCurrX());
 	}
 }
