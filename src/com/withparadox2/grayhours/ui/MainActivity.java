@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import com.withparadox2.grayhours.R;
+import com.withparadox2.grayhours.utils.DebugConfig;
 
 public class MainActivity extends Activity {
 	private ActionBar actionBar;
@@ -34,5 +36,20 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()){
+			/**
+			 * when item is clicked, android framework will call activity first, then fragment,
+			 * because home button has returned true in BaseActivity, here has to return false
+			 * forcing ItemListFragment to call it.
+			 */
+			case android.R.id.home:
+				return false;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 }

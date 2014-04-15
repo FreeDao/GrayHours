@@ -51,7 +51,9 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		getActivity().getActionBar().setTitle("GrayHours");
 		getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 	}
 
 
@@ -94,11 +96,12 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()){
 			case R.id.menu_analysis:
-				getFragmentManager().beginTransaction().replace(android.R.id.content, new AnalysisFragment()).addToBackStack(null).commit();
+				zoomFlag = false;
+				getFragmentManager().beginTransaction().replace(android.R.id.content, new AnalysisFragment(taskBeanList)).addToBackStack(null).commit();
 				break;
 			case R.id.menu_test:
 				Random random = new Random();
-				for(int i=0; i<1000; i++){
+				for(int i=0; i<10; i++){
 					if(i%30 == 0){
 						DatabaseManager.getInstanse().writeSingleToDatabaseForTest(-i, 0);
 					} else {
@@ -194,7 +197,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 		}
 		animator.addUpdateListener(this);
 		animator.addListener(this);
-		animator.setDuration(2000);
+		animator.setDuration(1000);
 		zoomFlag = !zoomFlag;
 		animator.start();
 	}

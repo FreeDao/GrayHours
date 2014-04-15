@@ -19,7 +19,7 @@ public class AnalysisTool {
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for(WorkBean workBean:workList){
 			dateInterval = CalendarTool.getDateIntervalFromBase(workBean.getDate());
-			totalMinutes = Integer.parseInt(workBean.getTotalTime());
+			totalMinutes = Integer.parseInt(workBean.getTotalTime())/60;
 			map.put(dateInterval, totalMinutes);
 		}
 		return map;

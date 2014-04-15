@@ -5,12 +5,21 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
 	android:padding="5dp">
+	<TextView
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:id="@+id/task_name_text"
+		android:gravity="center_horizontal"
+		android:textColor="@color/plum"
+		android:padding="25dp"
+		android:text="Android"
+		android:textSize="50sp"/>
 	<com.withparadox2.grayhours.ui.analysis.LinePlotView
+		android:id="@+id/lineplotview"
 		android:paddingLeft="5dp"
 		android:paddingRight="5dp"
-		android:paddingTop="150dp"
+		android:paddingTop="50dp"
 		android:paddingBottom="10dp"
-
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"/>
 </LinearLayout>

@@ -51,7 +51,7 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 
 	private float flingStartX;
 
-	private String dateText;
+	private String dateText = "";
 
 	private boolean dataAvaiable = false;
 
@@ -60,6 +60,8 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 	private int tempMaxHours = 100;
 
 	private int intervalHours = 2;
+
+	private LoadData loadData;
 
 	public LinePlotView(Context context) {
 		this(context, null, 0);
@@ -92,6 +94,10 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 				return gestureDetector.onTouchEvent(event);
 			}
 		});
+
+	}
+
+	public void getData(int index){
 		LoadData loadData = new LoadData(this);
 		loadData.execute(index);
 	}
@@ -154,9 +160,7 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		drawBackgroundGrid(canvas, gridPaint);
 		canvas.restore();
 		if(dataAvaiable)
-			canvas.drawText(dateText, contentRect.centerX(), contentRect.top-20, labelPaint);
-
-
+			canvas.drawText(dateText, contentRect.centerX(), contentRect.top+200, labelPaint);
 	}
 
 	@Override

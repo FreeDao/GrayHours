@@ -26,6 +26,7 @@ public class BaseButton extends Button{
 		this.setBackgroundDrawable(null);
 		this.baseColor = color;
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		
 	}
 
 	public BaseButton(Context context, AttributeSet attrs) {
