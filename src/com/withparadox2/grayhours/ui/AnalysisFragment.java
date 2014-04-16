@@ -2,7 +2,6 @@ package com.withparadox2.grayhours.ui;
 
 import android.app.ActionBar;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.ui.analysis.LinePlotView;
-import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 import java.util.ArrayList;
@@ -56,14 +54,13 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		TaskBean taskBean = taskBeanList.get(itemPosition);
-		textView.setText(taskBean.getName()+"  "+ Util.convertSecondsToHours(Integer.parseInt(taskBean.getTotalTime())));
+		textView.setText(taskBean.getName()+"  "+ String.valueOf(Integer.parseInt(taskBean.getTotalTime())/3600)+"h");
 		linePlotView.getData(itemPosition);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		DebugConfig.log("home click");
 
 		switch (item.getItemId()){
 

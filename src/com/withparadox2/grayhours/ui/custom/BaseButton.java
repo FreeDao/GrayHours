@@ -55,7 +55,7 @@ public class BaseButton extends Button{
 		paint.setTextSize(40);
 		paint.setColor(Color.DKGRAY);
 		paint.setTextAlign(Paint.Align.CENTER);
-		paint.setTypeface(Util.getFontFace());
+//		paint.setTypeface(Util.getFontFace());
 		return paint;
 	}
 	@Override

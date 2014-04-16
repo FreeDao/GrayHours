@@ -57,13 +57,15 @@ public class Util {
 		return num < 10 ? "0" + num : String.valueOf(num);
 	}
 
-	public static String convertSecondsToHours(int seconds){
+	public static String convertSecondsToHoursMinutes(int seconds){
 		int minutes = seconds/60;
 		if(minutes/60 < 1){
 			return String.valueOf(minutes) + "m";
 		}
 		return String.valueOf(minutes/60) + "h" + String.valueOf(minutes%60) + "m";
 	}
+
+
 
 	public static String convertMinutesToHours(int minutes){
 		return formatTimeDigits(minutes / 60) + ":" +formatTimeDigits(minutes % 60);

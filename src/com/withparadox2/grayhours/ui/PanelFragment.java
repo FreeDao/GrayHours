@@ -4,19 +4,13 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.*;
 import android.content.*;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.*;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TableRow;
-import android.widget.Toast;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
-import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.ui.custom.*;
 import com.withparadox2.grayhours.utils.CustomAction;
 import com.withparadox2.grayhours.utils.DebugConfig;
@@ -101,11 +95,11 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 				break;
 			case R.id.menu_test:
 				Random random = new Random();
-				for(int i=0; i<10; i++){
+				for(int i=0; i<500; i++){
 					if(i%30 == 0){
 						DatabaseManager.getInstanse().writeSingleToDatabaseForTest(-i, 0);
 					} else {
-						DatabaseManager.getInstanse().writeSingleToDatabaseForTest(-i, random.nextInt(15*60));
+						DatabaseManager.getInstanse().writeSingleToDatabaseForTest(-i, random.nextInt(8*60*60));
 					}
 				}
 				break;
@@ -163,7 +157,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 		taskButton.setIndex(index);
 		taskButton.setOnClickListener(new StratWorkOnClickListener());
 		taskButton.setText(taskBeanList.get(index).getName());
-		taskButton.setTimeText(Util.convertSecondsToHours(Integer.parseInt(taskBeanList.get(index).getTotalTime())));
+		taskButton.setTimeText(Util.convertSecondsToHoursMinutes(Integer.parseInt(taskBeanList.get(index).getTotalTime())));
 		row.addView(taskButton);
 	}
 

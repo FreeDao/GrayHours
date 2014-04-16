@@ -160,7 +160,7 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		drawBackgroundGrid(canvas, gridPaint);
 		canvas.restore();
 		if(dataAvaiable)
-			canvas.drawText(dateText, contentRect.centerX(), contentRect.top+200, labelPaint);
+			canvas.drawText(dateText, contentRect.centerX(), contentRect.top+180, labelPaint);
 	}
 
 	@Override
@@ -222,10 +222,10 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 			timeOld = map.get( CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(3-i + scrollCellWidthNum)));
 			if (timeOld != null){
 				heightOld = contentRect.bottom - timeOld /intervalHours/60f * cellHeight;
+				r = (Math.abs(x-contentRect.centerX()-cellWidth) > cellWidth/2) ? 5 : 10;
+				canvas.drawCircle(x-cellWidth, heightOld, r, coverColumnPaint);
 				if(timeNew != null){
-					r = (Math.abs(x-contentRect.centerX()) > cellWidth/2) ? 5 : 10;
 					canvas.drawLine(x, heightNew, x - cellWidth, heightOld, paint);
-					canvas.drawCircle(x, heightNew, r, coverColumnPaint);
 				}
 				heightNew = heightOld;
 			}
@@ -249,6 +249,8 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 
 
 	class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener{
+
+
 
 		@Override
 		public boolean onSingleTapUp(MotionEvent e) {
@@ -329,7 +331,7 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 				// Current scroll position
 				(int) scrollOffSetX,
 				0,
-				velocityX,
+				velocityX*2/3,
 				velocityY,
 				(int) (2-map.size()*cellWidth), 0,
 				0, 0);

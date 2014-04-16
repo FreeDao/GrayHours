@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="widget_dark_purple">#228D14FF</color>
+	<color name="widget_dark_purple">#22ffffFF</color>
 	<color name="widget_time_text">#99FFFFF0</color>
 	<color name="widget_title_text">#FFFFF0</color>
 
