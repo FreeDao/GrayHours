@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Created by withparadox2 on 14-3-3.
  */
-public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
+public class LinePlotView extends View {
 	private Paint gridPaint;
 	private Paint labelPaint;
 	private Paint dataLinePaint;
@@ -90,17 +90,12 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 						changeMaxHours = false;
 					}
 				}
-
 				return gestureDetector.onTouchEvent(event);
 			}
 		});
 
 	}
 
-	public void getData(int index){
-		LoadData loadData = new LoadData(this);
-		loadData.execute(index);
-	}
 
 	private void initialLength() {
 		widthOfView = getWidth();
@@ -150,17 +145,19 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		drawVerticalLabel(canvas, labelPaint);
 		drawHorizontalLabel(canvas, labelPaint);
 		canvas.drawRect(contentRect, framePaint);
-		canvas.drawLine(contentRect.centerX(), contentRect.top,
-				contentRect.centerX(), contentRect.bottom, framePaint);
+//		canvas.drawLine(contentRect.centerX(), contentRect.top,
+//				contentRect.centerX(), contentRect.bottom, framePaint);
 
 		canvas.clipRect(contentRect);
 		if(dataAvaiable){
 			drawDataLine(canvas, labelPaint);
+			canvas.drawText(dateText, contentRect.centerX(), contentRect.top+30, labelPaint);
+
+		} else {
+
 		}
 		drawBackgroundGrid(canvas, gridPaint);
 		canvas.restore();
-		if(dataAvaiable)
-			canvas.drawText(dateText, contentRect.centerX(), contentRect.top+180, labelPaint);
 	}
 
 	@Override
@@ -239,11 +236,9 @@ public class LinePlotView extends View implements LoadData.LoadFinishedCallback{
 		this.index = index;
 	}
 
-	@Override
-	public void loadFinishedCallback(Map map) {
+	public void setData(Map map) {
 		this.map = map;
 		dataAvaiable = true;
-		DebugConfig.log("the length of map is %d", map.size());
 		invalidate();
 	}
 

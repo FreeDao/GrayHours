@@ -37,4 +37,11 @@ public class CalendarTool {
 		return simpleDateFormat.format(calendar.getTime());
 	}
 
+	public static int getWeekOfToday(){//monday->0, tue->1 .etc.
+		Calendar calendar = Calendar.getInstance();
+		int intWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+		return intWeek;
+	}
+
+
 }

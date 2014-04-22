@@ -13,9 +13,6 @@ public class AnalysisView extends View {
 
 	public AnalysisView(Context context) {
 		super(context);
-		ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-			ViewGroup.LayoutParams.MATCH_PARENT);
-		this.setLayoutParams(lp);
 	}
 
 	public AnalysisView(Context context, AttributeSet attrs) {

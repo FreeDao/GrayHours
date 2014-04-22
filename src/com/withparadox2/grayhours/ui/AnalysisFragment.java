@@ -11,23 +11,31 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
+import com.withparadox2.grayhours.support.LoadData;
+import com.withparadox2.grayhours.ui.analysis.AnalysisScrollAysn;
+import com.withparadox2.grayhours.ui.analysis.githubview.GithubView;
 import com.withparadox2.grayhours.ui.analysis.LinePlotView;
-import com.withparadox2.grayhours.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by withparadox2 on 14-3-2.
  */
-public class AnalysisFragment extends Fragment implements ActionBar.OnNavigationListener{
+public class AnalysisFragment extends Fragment implements ActionBar.OnNavigationListener, LoadData.LoadFinishedCallback{
 	private LinePlotView linePlotView;
+	private GithubView githubView;
 	private TextView textView;
 
 	private List<TaskBean> taskBeanList;
+	private AnalysisScrollAysn analysisScrollAysn;
 	public AnalysisFragment(List<TaskBean> taskBeanList){
 		this.taskBeanList = taskBeanList;
+		analysisScrollAysn = new AnalysisScrollAysn();
 	}
+
+	public static Map<Integer, Integer> map;
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -47,6 +55,7 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.analysisfragment_layout, container, false);
 		linePlotView = (LinePlotView) view.findViewById(R.id.lineplotview);
+		githubView = (GithubView) view.findViewById(R.id.githubview);
 		textView = (TextView) view.findViewById(R.id.task_name_text);
 		return view;
 	}
@@ -55,8 +64,13 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		TaskBean taskBean = taskBeanList.get(itemPosition);
 		textView.setText(taskBean.getName()+"  "+ String.valueOf(Integer.parseInt(taskBean.getTotalTime())/3600)+"h");
-		linePlotView.getData(itemPosition);
+		getData(itemPosition);
 		return true;
+	}
+
+	public void getData(int index){
+		LoadData loadData = new LoadData(this);
+		loadData.execute(index);
 	}
 
 	@Override
@@ -70,5 +84,12 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 			default:
 				return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void loadFinishedCallback(Map map1) {
+		linePlotView.setData(map1);
+		map = map1;
+		githubView.setData();
 	}
 }

@@ -11,15 +11,30 @@
 		android:id="@+id/task_name_text"
 		android:gravity="center_horizontal"
 		android:textColor="@color/plum"
-		android:layout_marginTop="43dp"
 		android:text="Android"
-		android:textSize="40sp"/>
+		android:textSize="20sp"/>
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:orientation="horizontal"
+	    android:layout_height="0dp"
+		android:layout_weight="1.2">
+		<include layout="@layout/week_text"/>
+		<com.withparadox2.grayhours.ui.analysis.githubview.GithubView
+			android:id="@+id/githubview"
+			android:paddingTop="5dp"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"/>
+	</LinearLayout>
+
+
+
 	<com.withparadox2.grayhours.ui.analysis.LinePlotView
 		android:id="@+id/lineplotview"
 		android:paddingLeft="5dp"
 		android:paddingRight="5dp"
-		android:paddingTop="50dp"
+		android:paddingTop="5dp"
 		android:paddingBottom="10dp"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"/>
+		android:layout_height="0dp"
+		android:layout_weight="2"/>
 </LinearLayout>

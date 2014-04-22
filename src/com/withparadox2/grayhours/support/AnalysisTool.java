@@ -13,6 +13,10 @@ import java.util.Random;
  */
 public class AnalysisTool {
 
+	public static int TODAY_INDEX = CalendarTool.getWeekOfToday()-1;
+	public static int MAX_TOTAL_MINUTES = 0;
+
+
 	public static Map<Integer, Integer> getDataMap(int index){
 		int dateInterval, totalMinutes;
 		List<WorkBean> workList = DatabaseManager.getInstanse().getWorkListByIndex(index);
@@ -20,6 +24,7 @@ public class AnalysisTool {
 		for(WorkBean workBean:workList){
 			dateInterval = CalendarTool.getDateIntervalFromBase(workBean.getDate());
 			totalMinutes = Integer.parseInt(workBean.getTotalTime())/60;
+			if(totalMinutes > MAX_TOTAL_MINUTES) MAX_TOTAL_MINUTES = totalMinutes;
 			map.put(dateInterval, totalMinutes);
 		}
 		return map;
@@ -34,6 +39,5 @@ public class AnalysisTool {
 		}
 		return map;
 	}
-
 
 }
