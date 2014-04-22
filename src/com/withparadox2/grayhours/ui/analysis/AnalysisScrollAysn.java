@@ -29,4 +29,12 @@ public class AnalysisScrollAysn {
 			observer.scrollAnsy(dis);
 		}
 	}
+
+	public void updateGithubView(int scrollCellNumbers) {
+
+	}
+
+	public void updateLinePlotView(int scrollCellNumbers){
+
+	}
 }

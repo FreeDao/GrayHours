@@ -56,6 +56,14 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 		View view = inflater.inflate(R.layout.analysisfragment_layout, container, false);
 		linePlotView = (LinePlotView) view.findViewById(R.id.lineplotview);
 		githubView = (GithubView) view.findViewById(R.id.githubview);
+		githubView.setUpdateDateTextListener(new GithubView.UpdateDateTextListener() {
+			@Override
+			public void setDateText(String text) {
+				textView.setText(text);
+			}
+		});
+		githubView.setLinePlotView(linePlotView);
+		linePlotView.setGithubView(githubView);
 		textView = (TextView) view.findViewById(R.id.task_name_text);
 		return view;
 	}

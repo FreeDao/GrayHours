@@ -22,7 +22,7 @@ public class CellView extends TextView{
 	private Paint paint;
 	private String date;
 	private int key;
-	public static int selectedPositin=0;
+	public static int selectedPositin=AnalysisTool.TODAY_INDEX;
 
 
 	public CellView(Context context, final int index) {
@@ -48,10 +48,10 @@ public class CellView extends TextView{
 
 	public void setPosition(int position){
 		this.columnPosition = position;
-		date = CalendarTool.getDateFromToday(position * 7 - index + AnalysisTool.TODAY_INDEX);
+		date = CalendarTool.getDateFromToday(-position * 7 + index - AnalysisTool.TODAY_INDEX);
 		this.setText(date.substring(8));
 		key = CalendarTool.getDateIntervalFromBase(date);
-		setPaintColor();
+
 	}
 
 
@@ -59,13 +59,17 @@ public class CellView extends TextView{
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+		if (selectedPositin == columnPosition*7+index){
+			this.setBackgroundColor(getResources().getColor(R.color.blue));
+		} else {
+			this.setBackgroundColor(getResources().getColor(R.color.transparent));
+		}
+
 		super.onDraw(canvas);
+		setPaintColor();
 		padding = getPaddingBottom();
 		size = getHeight();
 		canvas.drawRect(padding, padding, size-padding, size-padding, paint);
-//		if (selectedPositin == columnPosition*7+index){
-//			this.setBackgroundColor(getResources().getColor(R.color.blue));
-//		}
 	}
 
 	private void setPaintColor(){

@@ -1,9 +1,17 @@
 package com.withparadox2.grayhours.ui.analysis.githubview;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.*;
 import android.widget.Scroller;
+import com.withparadox2.grayhours.support.AnalysisTool;
+import com.withparadox2.grayhours.support.CalendarTool;
+import com.withparadox2.grayhours.ui.AnalysisFragment;
+import com.withparadox2.grayhours.ui.analysis.LinePlotView;
+import com.withparadox2.grayhours.utils.DebugConfig;
+import com.withparadox2.grayhours.utils.Util;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -29,6 +37,8 @@ public class GithubView extends ViewGroup {
 	private int addOrMinusScrollOffSet;// the offset from scrollOffSet because of adding or removing view
 	private Map<Integer, Integer> map;
 	private boolean dataAvaiable = false;
+
+	private LinePlotView linePlotView;
 
 	public GithubView(Context context) {
 		this(context, null, 0);
@@ -78,6 +88,12 @@ public class GithubView extends ViewGroup {
 		setMeasuredDimension(width, height);
 	}
 
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+
+	}
+
 	private void initialView(int width){
 		if(getChildCount() == 0){
 			int maxColumnNum = width/cellSize + 1;
@@ -87,6 +103,7 @@ public class GithubView extends ViewGroup {
 				addView(columnView);
 			}
 			currentColumnPosition = 0;
+			CellView.selectedPositin = AnalysisTool.TODAY_INDEX;
 		}
 	}
 
@@ -108,7 +125,26 @@ public class GithubView extends ViewGroup {
 
 		@Override
 		public boolean onSingleTapUp(MotionEvent e) {
-			return super.onSingleTapUp(e);
+			int pos = currentColumnPosition -  (int) (e.getX()+scrollOffSet + addOrMinusScrollOffSet)/cellSize;
+			int ind = (int)(e.getY()/cellSize);
+			CellView.selectedPositin = pos*7+ind;
+			setDateText(pos, ind);
+			linePlotView.scrollToTargetCell(pos * 7 - ind + AnalysisTool.TODAY_INDEX);
+			invalidateAll();
+
+			return true;
+		}
+	}
+
+	private void invalidateAll(){
+		ViewGroup tempCol;
+		View tempCell;
+		for (int i=0, num=getChildCount(); i<num; i++){
+			tempCol = (ViewGroup) getChildAt(i);
+			for (int j=0; j<7; j++){
+				tempCell = tempCol.getChildAt(j);
+				tempCell.invalidate();
+			}
 		}
 	}
 
@@ -186,8 +222,47 @@ public class GithubView extends ViewGroup {
 
 	public void setData(){
 		dataAvaiable = true;
-		requestLayout();
+		invalidateAll();
 	}
 
+	public void setDateText(int position, int index){
+
+
+		String dateBase = CalendarTool.getDateFromToday(-position * 7 + index - AnalysisTool.TODAY_INDEX);
+		int consumeTime = 0;
+		try {
+			consumeTime = AnalysisFragment.map.get(CalendarTool.getDateIntervalFromBase(dateBase));
+		} catch (NullPointerException e) {
+		}
+		String dateText = dateBase +"    " + Util.convertMinutesToHours(consumeTime);
+		updateDateTextListener.setDateText(dateText);
+	}
+
+	private UpdateDateTextListener updateDateTextListener;
+
+	public interface UpdateDateTextListener{
+		public void setDateText(String text);
+	}
+
+	public void setUpdateDateTextListener(UpdateDateTextListener listener){
+		this.updateDateTextListener = listener;
+	}
+
+	public void setLinePlotView(LinePlotView linePlotView) {
+		this.linePlotView = linePlotView;
+	}
+
+//	public void scrollToTarget(int scrollCellsPara){
+//		int ind = 7-(scrollCellsPara - AnalysisTool.TODAY_INDEX)%7;
+//		int pos = (scrollCellsPara - AnalysisTool.TODAY_INDEX)/7+1;
+//		CellView.selectedPositin = pos*7+ind;
+//		setDateText(pos, ind);
+//		if (currentColumnPosition <= pos && pos<= currentColumnPosition+getChildCount()){
+//			invalidateAll();
+//		} else {
+//			mScroller.startScroll((int)scrollOffSet, 0, (currentColumnPosition - pos)*cellSize, 0, 100);
+//			requestLayout();
+//		}
+//	}
 
 }

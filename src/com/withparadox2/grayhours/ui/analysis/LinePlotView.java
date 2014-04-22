@@ -11,6 +11,7 @@ import android.widget.Scroller;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.support.LoadData;
+import com.withparadox2.grayhours.ui.analysis.githubview.GithubView;
 import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
@@ -60,6 +61,9 @@ public class LinePlotView extends View {
 	private int tempMaxHours = 100;
 
 	private int intervalHours = 2;
+	private int currentCellIndex = 0;
+
+	private GithubView githubView;
 
 	private LoadData loadData;
 
@@ -209,6 +213,7 @@ public class LinePlotView extends View {
 
 	private void drawDataLine(Canvas canvas, Paint paint){
 		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
+		currentCellIndex = -scrollCellWidthNum;
 		float x = contentRect.right - scrollOffSetX + cellWidth*scrollCellWidthNum - initiaGridlOffset;
 		String dateBase = CalendarTool.getDateFromToday((int)((initiaGridlOffset+ scrollOffSetX) / cellWidth));
 		Integer consumeTime = map.get(CalendarTool.getDateIntervalFromBase(dateBase));
@@ -343,6 +348,19 @@ public class LinePlotView extends View {
 		if (mScroller.computeScrollOffset()) {
 			scrollOffSetX = mScroller.getCurrX();
 			ViewCompat.postInvalidateOnAnimation(this);
+		} else {
+//			githubView.scrollToTarget((int)(scrollOffSetX/cellWidth));
 		}
+	}
+
+	public void scrollToTargetCell(int scrollCellNums){
+		mScroller.startScroll((int)scrollOffSetX, 0, (int)((currentCellIndex-scrollCellNums)*cellWidth), 0, 100);
+		ViewCompat.postInvalidateOnAnimation(this);
+
+		DebugConfig.log("scroll called from github view");
+	}
+
+	public void setGithubView(GithubView githubView){
+		this.githubView = githubView;
 	}
 }
