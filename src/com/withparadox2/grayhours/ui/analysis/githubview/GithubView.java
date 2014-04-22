@@ -150,7 +150,7 @@ public class GithubView extends ViewGroup {
 
 	private void updateView(){
 		int num = getChildCount();
-		if (getChildAt(0).getRight() < 0) {
+		while (getChildAt(0).getRight() < 0) {
 			columnViewCacheList.offer((ColumnView) getChildAt(0));
 			removeViewAt(0);
 			num--;
@@ -158,7 +158,7 @@ public class GithubView extends ViewGroup {
 			currentColumnPosition--;
 		}
 
-		if (getChildAt(num-1).getLeft() > getWidth()){
+		while (getChildAt(num-1).getLeft() > getWidth()){
 			columnViewCacheList.offer((ColumnView) getChildAt(num - 1));
 			removeViewAt(num-1);
 			num--;
@@ -252,17 +252,48 @@ public class GithubView extends ViewGroup {
 		this.linePlotView = linePlotView;
 	}
 
-//	public void scrollToTarget(int scrollCellsPara){
-//		int ind = 7-(scrollCellsPara - AnalysisTool.TODAY_INDEX)%7;
-//		int pos = (scrollCellsPara - AnalysisTool.TODAY_INDEX)/7+1;
-//		CellView.selectedPositin = pos*7+ind;
-//		setDateText(pos, ind);
-//		if (currentColumnPosition <= pos && pos<= currentColumnPosition+getChildCount()){
-//			invalidateAll();
-//		} else {
-//			mScroller.startScroll((int)scrollOffSet, 0, (currentColumnPosition - pos)*cellSize, 0, 100);
-//			requestLayout();
-//		}
-//	}
+	public void scrollToTarget(int scrollCellsPara){
+		updateView();
+
+		int ind,pos;
+		int temp = AnalysisTool.TODAY_INDEX - scrollCellsPara;
+		if (scrollCellsPara <= 0) {
+			if (temp <= 6){
+				pos = 0;
+				ind = temp;
+			} else {
+				ind = temp%7;
+				pos = -temp/7;
+			}
+		} else {
+			if (temp >= 0) {
+				pos = 0;
+				ind = temp;
+			} else {
+				ind = 7-(scrollCellsPara - AnalysisTool.TODAY_INDEX)%7;
+				if (ind == 7){
+					ind = 0;
+					pos = (scrollCellsPara - AnalysisTool.TODAY_INDEX)/7;
+				} else {
+					pos = (scrollCellsPara - AnalysisTool.TODAY_INDEX)/7 + 1;
+				}
+			}
+		}
+
+		CellView.selectedPositin = pos*7+ind;
+		DebugConfig.log("currPos:%d, position:%d, num:%d",currentColumnPosition, pos, getChildCount());
+		setDateText(pos, ind);
+		mScroller.forceFinished(true);
+
+		if (currentColumnPosition-2 < pos) {
+			mScroller.startScroll((int) scrollOffSet, 0, -2 * cellSize, 0, 1);
+		} else if(currentColumnPosition - getChildCount()+2 > pos) {
+			mScroller.startScroll((int)scrollOffSet, 0, 2*cellSize, 0, 1);
+	
+		}
+		invalidate();//can not be removed, but why??? how about requestLayout????
+
+		invalidateAll();
+	}
 
 }

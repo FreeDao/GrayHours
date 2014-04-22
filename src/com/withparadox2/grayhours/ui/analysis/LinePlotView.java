@@ -155,7 +155,7 @@ public class LinePlotView extends View {
 		canvas.clipRect(contentRect);
 		if(dataAvaiable){
 			drawDataLine(canvas, labelPaint);
-			canvas.drawText(dateText, contentRect.centerX(), contentRect.top+30, labelPaint);
+//			canvas.drawText(dateText, contentRect.centerX(), contentRect.top+30, labelPaint);
 
 		} else {
 
@@ -213,11 +213,10 @@ public class LinePlotView extends View {
 
 	private void drawDataLine(Canvas canvas, Paint paint){
 		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
-		currentCellIndex = -scrollCellWidthNum;
 		float x = contentRect.right - scrollOffSetX + cellWidth*scrollCellWidthNum - initiaGridlOffset;
 		String dateBase = CalendarTool.getDateFromToday((int)((initiaGridlOffset+ scrollOffSetX) / cellWidth));
 		Integer consumeTime = map.get(CalendarTool.getDateIntervalFromBase(dateBase));
-		dateText = dateBase +"    " + Util.convertMinutesToHours(consumeTime==null ? 0: consumeTime);
+//		dateText = dateBase +"    " + Util.convertMinutesToHours(consumeTime==null ? 0: consumeTime);
 		Integer timeNew = null, timeOld;
 		float heightNew = 20f, heightOld, r;
 		for (int i=0; i <= 8; i++){
@@ -264,6 +263,8 @@ public class LinePlotView extends View {
 			mScroller.forceFinished(true);
 			if(!changeMaxHours){
 				scrollOffSetX = scrollOffSetX + distanceX;
+				githubView.scrollToTarget((int)(-(scrollOffSetX+initiaGridlOffset)/cellWidth));
+
 			} else {
 				if(distanceY*scrollOffSetY < 0){
 					scrollOffSetY =0;
@@ -277,6 +278,8 @@ public class LinePlotView extends View {
 
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			fromLineToGit = true;
+
 			flingStartX = e2.getX();
 			if(!changeMaxHours)
 				fling((int) -velocityX, (int) -velocityY);
@@ -333,7 +336,7 @@ public class LinePlotView extends View {
 				0,
 				velocityX*2/3,
 				velocityY,
-				(int) (2-map.size()*cellWidth), 0,
+				Integer.MIN_VALUE, Integer.MAX_VALUE,
 				0, 0);
 		float ds = mScroller.getFinalX();
 		int scrollCellWidthNum = (int)(ds / cellWidth);
@@ -342,22 +345,42 @@ public class LinePlotView extends View {
 		ViewCompat.postInvalidateOnAnimation(this);
 	}
 
+	private boolean fromLineToGit = false;
 	@Override
 	public void computeScroll() {
 		super.computeScroll();
 		if (mScroller.computeScrollOffset()) {
 			scrollOffSetX = mScroller.getCurrX();
+			if(fromLineToGit) {
+				if (scrollOffSetX < 0){
+					githubView.scrollToTarget((int)(-(scrollOffSetX-10)/cellWidth));
+				} else {
+					githubView.scrollToTarget((int)(-(scrollOffSetX+10)/cellWidth));
+				}
+			}
 			ViewCompat.postInvalidateOnAnimation(this);
 		} else {
-//			githubView.scrollToTarget((int)(scrollOffSetX/cellWidth));
+//			if (scrollOffSetX > 0){
+//				currentCellIndex = -(int)((scrollOffSetX + 10) / cellWidth);
+//			} else {
+//				currentCellIndex = -(int)((scrollOffSetX - 10) / cellWidth);
+//			}
+//			DebugConfig.log("scrollOffSetX:%f, currentCellIndex:%d", scrollOffSetX, currentCellIndex);
 		}
 	}
 
 	public void scrollToTargetCell(int scrollCellNums){
+		fromLineToGit = false;
+		if (scrollOffSetX > 0){
+			currentCellIndex = -(int)((scrollOffSetX + 10) / cellWidth);
+		} else {
+			currentCellIndex = -(int)((scrollOffSetX - 10) / cellWidth);
+		}
+		DebugConfig.log("git scrollNums:%d, currentCellIndex:%d, scrollOffSetX:%f", scrollCellNums, currentCellIndex, scrollOffSetX);
+
 		mScroller.startScroll((int)scrollOffSetX, 0, (int)((currentCellIndex-scrollCellNums)*cellWidth), 0, 100);
 		ViewCompat.postInvalidateOnAnimation(this);
 
-		DebugConfig.log("scroll called from github view");
 	}
 
 	public void setGithubView(GithubView githubView){
