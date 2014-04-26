@@ -5,11 +5,9 @@
 	      android:title="@string/menu_analysis"
 		android:icon="@android:drawable/ic_menu_sort_by_size"
 		android:showAsAction="ifRoom"/>
-	<item android:id="@+id/menu_test"
-	      android:title="test"
-	      android:icon="@android:drawable/ic_media_play"
-	      android:showAsAction="never"/>
-
-
+	<!--<item android:id="@+id/menu_test"-->
+	      <!--android:title="about"-->
+	      <!--android:icon="@android:drawable/ic_media_play"-->
+	      <!--android:showAsAction="never"/>-->
 
 </menu>

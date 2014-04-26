@@ -28,7 +28,7 @@ public class CellView extends TextView{
 	public CellView(Context context, final int index) {
 		super(context);
 		this.index = index;
-		this.setPadding(3,3,3,3);
+		this.setPadding(5,5,5,5);
 		paint = new Paint();
 		paint.setColor(getResources().getColor(R.color.github_level_0));
 		paint.setAntiAlias(true);
@@ -58,7 +58,7 @@ public class CellView extends TextView{
 	@Override
 	protected void onDraw(Canvas canvas) {
 		if (selectedPositin == columnPosition*7+index){
-			this.setBackgroundColor(getResources().getColor(R.color.blue));
+			this.setBackgroundColor(getResources().getColor(R.color.coral));
 		} else {
 			this.setBackgroundColor(getResources().getColor(R.color.transparent));
 		}

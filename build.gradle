@@ -12,7 +12,10 @@ buildscript {
 
 apply plugin: 'android'
 dependencies {
+    compile 'com.android.support:support-v4:13.0.0'
 }
+
+
 
 android {
 
@@ -22,6 +25,19 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 14
+    }
+    signingConfigs {
+        release {
+            storeFile file("F:\\guishidan\\other\\android-develop\\password")
+            storePassword "4206211991"
+            keyAlias "withparadox2"
+            keyPassword "4206211991"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
     }
 
     target = 'android-14'

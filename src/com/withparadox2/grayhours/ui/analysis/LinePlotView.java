@@ -123,7 +123,7 @@ public class LinePlotView extends View {
 		gridPaint.setStyle(Paint.Style.STROKE);
 		gridPaint.setStrokeWidth(1f);
 
-		labelPaint.setColor(getResources().getColor(R.color.label_color));
+		labelPaint.setColor(getResources().getColor(R.color.github_text));
 		labelPaint.setTextAlign(Paint.Align.CENTER);
 		labelPaint.setTextSize(Util.sp2px(13));
 
@@ -216,7 +216,6 @@ public class LinePlotView extends View {
 		float x = contentRect.right - scrollOffSetX + cellWidth*(scrollCellWidthNum+1) - initiaGridlOffset;
 		Integer timeOld;
 		float heightNew = contentRect.bottom, heightOld, r;
-		DebugConfig.log("==============");
 
 		for (int i=0; i <= 10; i++){
 			timeOld = map.get( CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(4-i + scrollCellWidthNum)));
@@ -347,10 +346,12 @@ public class LinePlotView extends View {
 		if (mScroller.computeScrollOffset()) {
 			scrollOffSetX = mScroller.getCurrX();
 			if(fromLineToGit) {
-				if (scrollOffSetX < 0){
-					githubView.scrollToTarget((int)(-(scrollOffSetX-10)/cellWidth));
-				} else {
-					githubView.scrollToTarget((int)(-(scrollOffSetX+10)/cellWidth));
+				if (Math.abs(scrollOffSetX) > 5) {
+					if (scrollOffSetX < 0){
+						githubView.scrollToTarget((int)(-(scrollOffSetX-10)/cellWidth));
+					} else {
+						githubView.scrollToTarget((int)(-(scrollOffSetX+10)/cellWidth));
+					}
 				}
 			}
 			ViewCompat.postInvalidateOnAnimation(this);
@@ -371,7 +372,6 @@ public class LinePlotView extends View {
 		} else {
 			currentCellIndex = -(int)((scrollOffSetX - 10) / cellWidth);
 		}
-		DebugConfig.log("git scrollNums:%d, currentCellIndex:%d, scrollOffSetX:%f", scrollCellNums, currentCellIndex, scrollOffSetX);
 
 		mScroller.startScroll((int)scrollOffSetX, 0, (int)((currentCellIndex-scrollCellNums)*cellWidth), 0, 100);
 		ViewCompat.postInvalidateOnAnimation(this);
