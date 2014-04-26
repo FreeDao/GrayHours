@@ -18,6 +18,7 @@ public class AnalysisTool {
 
 
 	public static Map<Integer, Integer> getDataMap(int index){
+		MAX_TOTAL_MINUTES = 0;
 		int dateInterval, totalMinutes;
 		List<WorkBean> workList = DatabaseManager.getInstanse().getWorkListByIndex(index);
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();

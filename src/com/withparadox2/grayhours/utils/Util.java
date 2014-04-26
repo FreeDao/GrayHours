@@ -111,8 +111,9 @@ public class Util {
 	}
 
 	public static Typeface getFontFace(){
-		Typeface face = Typeface.createFromAsset(GlobalContext.getInstance().getAssets(),
-				"HelveticaNeueLight.otf");
-		return face;
+//		Typeface face = Typeface.createFromAsset(GlobalContext.getInstance().getAssets(),
+//				"HelveticaNeueLight.otf");
+//		return face;
+		return null;
 	}
 }

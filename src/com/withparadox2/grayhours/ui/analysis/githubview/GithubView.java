@@ -205,7 +205,7 @@ public class GithubView extends ViewGroup {
 				0,
 				velocityX * 2 / 3,
 				velocityY,
-				-100000, 100000,
+				Integer.MIN_VALUE, Integer.MAX_VALUE,
 				0, 0);
 		requestLayout();
 	}
@@ -223,6 +223,7 @@ public class GithubView extends ViewGroup {
 	public void setData(){
 		dataAvaiable = true;
 		invalidateAll();
+		setDateText(0, AnalysisTool.TODAY_INDEX);
 	}
 
 	public void setDateText(int position, int index){
@@ -281,7 +282,7 @@ public class GithubView extends ViewGroup {
 		}
 
 		CellView.selectedPositin = pos*7+ind;
-		DebugConfig.log("currPos:%d, position:%d, num:%d",currentColumnPosition, pos, getChildCount());
+//		DebugConfig.log("currPos:%d, position:%d, num:%d",currentColumnPosition, pos, getChildCount());
 		setDateText(pos, ind);
 		mScroller.forceFinished(true);
 
@@ -292,7 +293,6 @@ public class GithubView extends ViewGroup {
 	
 		}
 		invalidate();//can not be removed, but why??? how about requestLayout????
-
 		invalidateAll();
 	}
 

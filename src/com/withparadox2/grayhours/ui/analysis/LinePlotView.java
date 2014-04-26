@@ -182,7 +182,7 @@ public class LinePlotView extends View {
 		}
 		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
 		float x = (float)contentRect.left - scrollOffSetX + cellWidth*scrollCellWidthNum + initiaGridlOffset;
-		for (int i=0; i<=7; i++){
+		for (int i=0; i<=8; i++){
 			canvas.drawLine(x, contentRect.top, x, contentRect.bottom, paint);
 			x += cellWidth;
 		}
@@ -201,9 +201,9 @@ public class LinePlotView extends View {
 
 	private void drawHorizontalLabel(Canvas canvas, Paint paint){
 		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
-		float x = contentRect.right - scrollOffSetX + cellWidth*scrollCellWidthNum + initiaGridlOffset;
-		for (int i=0; i <= 7; i++){
-			canvas.drawText(CalendarTool.getDateFromToday(3 - i + scrollCellWidthNum).substring(8),
+		float x = contentRect.right - scrollOffSetX + cellWidth*(scrollCellWidthNum+1) + initiaGridlOffset;
+		for (int i=0; i <= 8; i++){
+			canvas.drawText(CalendarTool.getDateFromToday(4 - i + scrollCellWidthNum).substring(8),
 					x ,
 					getHeight(),
 					paint);
@@ -213,24 +213,22 @@ public class LinePlotView extends View {
 
 	private void drawDataLine(Canvas canvas, Paint paint){
 		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
-		float x = contentRect.right - scrollOffSetX + cellWidth*scrollCellWidthNum - initiaGridlOffset;
-		String dateBase = CalendarTool.getDateFromToday((int)((initiaGridlOffset+ scrollOffSetX) / cellWidth));
-		Integer consumeTime = map.get(CalendarTool.getDateIntervalFromBase(dateBase));
-//		dateText = dateBase +"    " + Util.convertMinutesToHours(consumeTime==null ? 0: consumeTime);
-		Integer timeNew = null, timeOld;
-		float heightNew = 20f, heightOld, r;
-		for (int i=0; i <= 8; i++){
-			timeOld = map.get( CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(3-i + scrollCellWidthNum)));
-			if (timeOld != null){
-				heightOld = contentRect.bottom - timeOld /intervalHours/60f * cellHeight;
-				r = (Math.abs(x-contentRect.centerX()-cellWidth) > cellWidth/2) ? 5 : 10;
-				canvas.drawCircle(x-cellWidth, heightOld, r, coverColumnPaint);
-				if(timeNew != null){
-					canvas.drawLine(x, heightNew, x - cellWidth, heightOld, paint);
-				}
-				heightNew = heightOld;
+		float x = contentRect.right - scrollOffSetX + cellWidth*(scrollCellWidthNum+1) - initiaGridlOffset;
+		Integer timeOld;
+		float heightNew = contentRect.bottom, heightOld, r;
+		DebugConfig.log("==============");
+
+		for (int i=0; i <= 10; i++){
+			timeOld = map.get( CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(4-i + scrollCellWidthNum)));
+			if (timeOld == null){
+				timeOld = 0;
 			}
-			timeNew = timeOld;
+			heightOld = contentRect.bottom - timeOld /intervalHours/60f * cellHeight;
+
+			r = (Math.abs(x-contentRect.centerX()-cellWidth) > cellWidth/2) ? 5 : 10;
+			canvas.drawCircle(x-cellWidth, heightOld, r, coverColumnPaint);
+			canvas.drawLine(x, heightNew, x - cellWidth, heightOld, paint);
+			heightNew = heightOld;
 			x -= cellWidth;
 		}
 	}
@@ -249,11 +247,8 @@ public class LinePlotView extends View {
 
 	class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener{
 
-
-
 		@Override
 		public boolean onSingleTapUp(MotionEvent e) {
-			DebugConfig.log("onSingleTapUp has been called");
 
 			return super.onSingleTapUp(e);
 		}

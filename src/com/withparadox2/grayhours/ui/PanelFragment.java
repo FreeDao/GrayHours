@@ -91,7 +91,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 		switch (item.getItemId()){
 			case R.id.menu_analysis:
 				zoomFlag = false;
-				getFragmentManager().beginTransaction().replace(android.R.id.content, new AnalysisFragment(taskBeanList)).addToBackStack(null).commit();
+				getFragmentManager().beginTransaction().replace(android.R.id.content, new AnalysisFragment(taskBeanList, animationIndex)).addToBackStack(null).commit();
 				break;
 			case R.id.menu_test:
 				Random random = new Random();

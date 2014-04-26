@@ -28,7 +28,6 @@ public class CellView extends TextView{
 	public CellView(Context context, final int index) {
 		super(context);
 		this.index = index;
-		this.setTextSize(10);
 		this.setPadding(3,3,3,3);
 		paint = new Paint();
 		paint.setColor(getResources().getColor(R.color.github_level_0));
@@ -49,7 +48,6 @@ public class CellView extends TextView{
 	public void setPosition(int position){
 		this.columnPosition = position;
 		date = CalendarTool.getDateFromToday(-position * 7 + index - AnalysisTool.TODAY_INDEX);
-		this.setText(date.substring(8));
 		key = CalendarTool.getDateIntervalFromBase(date);
 
 	}

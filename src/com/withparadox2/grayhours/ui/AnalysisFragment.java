@@ -30,9 +30,12 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 
 	private List<TaskBean> taskBeanList;
 	private AnalysisScrollAysn analysisScrollAysn;
-	public AnalysisFragment(List<TaskBean> taskBeanList){
+	private boolean initializing = true;
+	private int index;
+	public AnalysisFragment(List<TaskBean> taskBeanList, int index){
 		this.taskBeanList = taskBeanList;
 		analysisScrollAysn = new AnalysisScrollAysn();
+		this.index = index;
 	}
 
 	public static Map<Integer, Integer> map;
@@ -47,8 +50,10 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 		}
 		ArrayAdapter<String> aAdpt = new ArrayAdapter<String>(actionBar.getThemedContext(), android.R.layout.simple_list_item_1, android.R.id.text1, itemList);
 		actionBar.setListNavigationCallbacks(aAdpt, this);
+		actionBar.setSelectedNavigationItem(index);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		setHasOptionsMenu(true);
+
 	}
 
 	@Override
@@ -70,8 +75,6 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		TaskBean taskBean = taskBeanList.get(itemPosition);
-		textView.setText(taskBean.getName()+"  "+ String.valueOf(Integer.parseInt(taskBean.getTotalTime())/3600)+"h");
 		getData(itemPosition);
 		return true;
 	}
