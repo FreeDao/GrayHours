@@ -255,9 +255,9 @@ public class GithubView extends ViewGroup {
 
 	public void scrollToTarget(int scrollCellsPara){
 		updateView();
-
 		int ind,pos;
 		int temp = AnalysisTool.TODAY_INDEX - scrollCellsPara;
+		DebugConfig.log("todyindex:%d, scrollCellsPara is:%d", AnalysisTool.TODAY_INDEX ,scrollCellsPara);
 		if (scrollCellsPara <= 0) {
 			if (temp <= 6){
 				pos = 0;

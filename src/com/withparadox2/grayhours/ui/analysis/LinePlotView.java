@@ -50,9 +50,6 @@ public class LinePlotView extends View {
 
 	private Rect contentRect = new Rect();
 
-	private float flingStartX;
-
-	private String dateText = "";
 
 	private boolean dataAvaiable = false;
 
@@ -225,7 +222,7 @@ public class LinePlotView extends View {
 			heightOld = contentRect.bottom - timeOld /intervalHours/60f * cellHeight;
 
 			r = (Math.abs(x-contentRect.centerX()-cellWidth) > cellWidth/2) ? 5 : 10;
-			canvas.drawCircle(x-cellWidth, heightOld, r, coverColumnPaint);
+			canvas.drawCircle(x - cellWidth, heightOld, r, coverColumnPaint);
 			canvas.drawLine(x, heightNew, x - cellWidth, heightOld, paint);
 			heightNew = heightOld;
 			x -= cellWidth;
@@ -257,8 +254,12 @@ public class LinePlotView extends View {
 			mScroller.forceFinished(true);
 			if(!changeMaxHours){
 				scrollOffSetX = scrollOffSetX + distanceX;
-				githubView.scrollToTarget((int)(-(scrollOffSetX+initiaGridlOffset)/cellWidth));
-
+				if (scrollOffSetX < 0){
+					githubView.scrollToTarget((int)(-(scrollOffSetX+initiaGridlOffset)/cellWidth));
+				} else {
+					githubView.scrollToTarget((int)(-(scrollOffSetX-initiaGridlOffset)/cellWidth));
+				}
+				DebugConfig.log("scrollOffSetX:%f, addinitial:%f, cellWidth:%f, num is:%d",scrollOffSetX, -(scrollOffSetX+initiaGridlOffset), cellWidth, (int)(-(scrollOffSetX+initiaGridlOffset)/cellWidth));
 			} else {
 				if(distanceY*scrollOffSetY < 0){
 					scrollOffSetY =0;
@@ -273,8 +274,6 @@ public class LinePlotView extends View {
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			fromLineToGit = true;
-
-			flingStartX = e2.getX();
 			if(!changeMaxHours)
 				fling((int) -velocityX, (int) -velocityY);
 			return true;
@@ -291,7 +290,7 @@ public class LinePlotView extends View {
 			}
 			tempMaxHours = scrollHours;
 		}
-		if (maxHours > 24 ) {
+		if (maxHours > 21 ) {
 			maxHours = 24;
 		}
 		if (maxHours < 4) {
@@ -346,22 +345,13 @@ public class LinePlotView extends View {
 		if (mScroller.computeScrollOffset()) {
 			scrollOffSetX = mScroller.getCurrX();
 			if(fromLineToGit) {
-				if (Math.abs(scrollOffSetX) > 5) {
-					if (scrollOffSetX < 0){
-						githubView.scrollToTarget((int)(-(scrollOffSetX-10)/cellWidth));
-					} else {
-						githubView.scrollToTarget((int)(-(scrollOffSetX+10)/cellWidth));
-					}
+				if (scrollOffSetX < 0){
+					githubView.scrollToTarget((int)(-(scrollOffSetX+initiaGridlOffset)/cellWidth));
+				} else {
+					githubView.scrollToTarget((int)(-(scrollOffSetX-initiaGridlOffset)/cellWidth));
 				}
 			}
 			ViewCompat.postInvalidateOnAnimation(this);
-		} else {
-//			if (scrollOffSetX > 0){
-//				currentCellIndex = -(int)((scrollOffSetX + 10) / cellWidth);
-//			} else {
-//				currentCellIndex = -(int)((scrollOffSetX - 10) / cellWidth);
-//			}
-//			DebugConfig.log("scrollOffSetX:%f, currentCellIndex:%d", scrollOffSetX, currentCellIndex);
 		}
 	}
 
