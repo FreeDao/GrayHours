@@ -61,4 +61,5 @@ public class ColumnView extends ViewGroup{
 			child.layout(0, c*cellSize, cellSize, (c + 1) * cellSize);
 		}
 	}
+
 }

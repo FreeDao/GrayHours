@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by withparadox2 on 14-3-7.
  */
 public class CalendarTool {
-	private final static String BASE_DATE = "2014-00-00";
+	private final static String BASE_DATE = getCurrentDate();
 	public static int getDateIntervalFromBase(String date){
 		int result = 0;
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

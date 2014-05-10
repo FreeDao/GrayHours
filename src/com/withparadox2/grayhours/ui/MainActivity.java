@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()){
 			/**
 			 * when item is clicked, android framework will call activity first, then fragment,
-			 * because home button has returned true in BaseActivity, here has to return false
+			 * because home button has returned true in BaseActivity by default, here has to return false
 			 * forcing ItemListFragment to call it.
 			 */
 			case android.R.id.home:

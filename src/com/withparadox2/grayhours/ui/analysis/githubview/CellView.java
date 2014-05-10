@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -19,8 +20,7 @@ import com.withparadox2.grayhours.utils.DebugConfig;
 public class CellView extends TextView{
 	private int padding, size;
 	private int columnPosition, index;
-	private Paint paint;
-	private String date;
+	private static Paint paint;
 	private int key;
 	public static int selectedPositin=AnalysisTool.TODAY_INDEX;
 
@@ -29,31 +29,18 @@ public class CellView extends TextView{
 		super(context);
 		this.index = index;
 		this.setPadding(5,5,5,5);
-		paint = new Paint();
-		paint.setColor(getResources().getColor(R.color.github_level_0));
-		paint.setAntiAlias(true);
-		paint.setStyle(Paint.Style.FILL);
-
-//		this.setOnTouchListener(new OnTouchListener() {
-//
-//			@Override
-//			public boolean onTouch(View v, MotionEvent event) {
-//				selectedPositin = columnPosition*7+index;
-//				DebugConfig.log("onCLick :%d", selectedPositin);
-//				return false;
-//			}
-//		});
+		if (paint==null){
+			paint = new Paint();
+			paint.setColor(getResources().getColor(R.color.github_level_0));
+			paint.setAntiAlias(true);
+			paint.setStyle(Paint.Style.FILL);
+		}
 	}
 
 	public void setPosition(int position){
 		this.columnPosition = position;
-		date = CalendarTool.getDateFromToday(-position * 7 + index - AnalysisTool.TODAY_INDEX);
-		key = CalendarTool.getDateIntervalFromBase(date);
-
+		key = -position * 7 + index - AnalysisTool.TODAY_INDEX;
 	}
-
-
-
 
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -87,5 +74,4 @@ public class CellView extends TextView{
 			paint.setColor(getResources().getColor(R.color.github_level_3));
 		}
 	}
-
 }

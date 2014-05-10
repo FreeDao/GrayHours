@@ -102,18 +102,26 @@ public class GithubView extends ViewGroup {
 				columnView.setPosition(-c);
 				addView(columnView);
 			}
+			for (int c=0; c<5; c++){
+				columnViewCacheList.offer(new ColumnView(context));
+			}
 			currentColumnPosition = 0;
 			CellView.selectedPositin = AnalysisTool.TODAY_INDEX;
 		}
 	}
 
 	private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			long starttime, starttime1;
 			mScroller.forceFinished(true);
 			scrollOffSet += distanceX;
+			starttime1 = System.currentTimeMillis();
 			updateView();
 			requestLayout();
+			DebugConfig.log("update view and layout:%d", System.currentTimeMillis()-starttime1);
+
 			return true;
 		}
 
@@ -131,7 +139,6 @@ public class GithubView extends ViewGroup {
 			setDateText(pos, ind);
 			linePlotView.scrollToTargetCell(pos * 7 - ind + AnalysisTool.TODAY_INDEX);
 			invalidateAll();
-
 			return true;
 		}
 	}
@@ -150,6 +157,7 @@ public class GithubView extends ViewGroup {
 
 	private void updateView(){
 		int num = getChildCount();
+
 		while (getChildAt(0).getRight() < 0) {
 			columnViewCacheList.offer((ColumnView) getChildAt(0));
 			removeViewAt(0);
@@ -203,7 +211,7 @@ public class GithubView extends ViewGroup {
 				// Current scroll position
 				(int) scrollOffSet,
 				0,
-				velocityX * 2 / 3,
+				velocityX,
 				velocityY,
 				Integer.MIN_VALUE, Integer.MAX_VALUE,
 				0, 0);
@@ -227,8 +235,6 @@ public class GithubView extends ViewGroup {
 	}
 
 	public void setDateText(int position, int index){
-
-
 		String dateBase = CalendarTool.getDateFromToday(-position * 7 + index - AnalysisTool.TODAY_INDEX);
 		int consumeTime = 0;
 		try {

@@ -95,7 +95,7 @@ public class PanelFragment extends BaseFragment implements ValueAnimator.Animato
 				break;
 //			case R.id.menu_test:
 //				Random random = new Random();
-//				for(int i=0; i<500; i++){
+//				for(int i=0; i<2500; i++){
 //					if(i%30 == 0){
 //						DatabaseManager.getInstanse().writeSingleToDatabaseForTest(-i, 0);
 //					} else {

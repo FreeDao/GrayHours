@@ -84,7 +84,6 @@ public class LinePlotView extends View {
 				mScroller.forceFinished(true);
 				if(event.getAction() == MotionEvent.ACTION_DOWN){
 					if (event.getX() < contentRect.left && event.getY() > contentRect.top){
-						DebugConfig.log("change hours");
 						scrollOffSetY = 0;
 						changeMaxHours = true;
 					} else {
@@ -146,16 +145,9 @@ public class LinePlotView extends View {
 		drawVerticalLabel(canvas, labelPaint);
 		drawHorizontalLabel(canvas, labelPaint);
 		canvas.drawRect(contentRect, framePaint);
-//		canvas.drawLine(contentRect.centerX(), contentRect.top,
-//				contentRect.centerX(), contentRect.bottom, framePaint);
-
 		canvas.clipRect(contentRect);
 		if(dataAvaiable){
 			drawDataLine(canvas, labelPaint);
-//			canvas.drawText(dateText, contentRect.centerX(), contentRect.top+30, labelPaint);
-
-		} else {
-
 		}
 		drawBackgroundGrid(canvas, gridPaint);
 		canvas.restore();
@@ -215,7 +207,7 @@ public class LinePlotView extends View {
 		float heightNew = contentRect.bottom, heightOld, r;
 
 		for (int i=0; i <= 10; i++){
-			timeOld = map.get( CalendarTool.getDateIntervalFromBase(CalendarTool.getDateFromToday(4-i + scrollCellWidthNum)));
+			timeOld = map.get(4-i + scrollCellWidthNum);
 			if (timeOld == null){
 				timeOld = 0;
 			}
@@ -245,7 +237,6 @@ public class LinePlotView extends View {
 
 		@Override
 		public boolean onSingleTapUp(MotionEvent e) {
-
 			return super.onSingleTapUp(e);
 		}
 
@@ -254,12 +245,7 @@ public class LinePlotView extends View {
 			mScroller.forceFinished(true);
 			if(!changeMaxHours){
 				scrollOffSetX = scrollOffSetX + distanceX;
-				if (scrollOffSetX < 0){
-					githubView.scrollToTarget((int)(-(scrollOffSetX+initiaGridlOffset)/cellWidth));
-				} else {
-					githubView.scrollToTarget((int)(-(scrollOffSetX-initiaGridlOffset)/cellWidth));
-				}
-				DebugConfig.log("scrollOffSetX:%f, addinitial:%f, cellWidth:%f, num is:%d",scrollOffSetX, -(scrollOffSetX+initiaGridlOffset), cellWidth, (int)(-(scrollOffSetX+initiaGridlOffset)/cellWidth));
+				scrollGithubView();
 			} else {
 				if(distanceY*scrollOffSetY < 0){
 					scrollOffSetY =0;
@@ -290,7 +276,7 @@ public class LinePlotView extends View {
 			}
 			tempMaxHours = scrollHours;
 		}
-		if (maxHours > 21 ) {
+		if (maxHours >= 22) {
 			maxHours = 24;
 		}
 		if (maxHours < 4) {
@@ -345,13 +331,17 @@ public class LinePlotView extends View {
 		if (mScroller.computeScrollOffset()) {
 			scrollOffSetX = mScroller.getCurrX();
 			if(fromLineToGit) {
-				if (scrollOffSetX < 0){
-					githubView.scrollToTarget((int)(-(scrollOffSetX+initiaGridlOffset)/cellWidth));
-				} else {
-					githubView.scrollToTarget((int)(-(scrollOffSetX-initiaGridlOffset)/cellWidth));
-				}
+				scrollGithubView();
 			}
 			ViewCompat.postInvalidateOnAnimation(this);
+		}
+	}
+
+	private void scrollGithubView(){
+		if (scrollOffSetX < 0){
+			githubView.scrollToTarget((int)(-(scrollOffSetX+initiaGridlOffset)/cellWidth));
+		} else {
+			githubView.scrollToTarget((int)(-(scrollOffSetX-initiaGridlOffset)/cellWidth));
 		}
 	}
 
