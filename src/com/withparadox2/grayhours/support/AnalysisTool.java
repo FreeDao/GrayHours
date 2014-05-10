@@ -1,5 +1,7 @@
 package com.withparadox2.grayhours.support;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import com.withparadox2.grayhours.bean.WorkBean;
 import com.withparadox2.grayhours.dao.DatabaseManager;
 
@@ -12,6 +14,8 @@ import java.util.Random;
  * Created by withparadox2 on 14-3-3.
  */
 public class AnalysisTool {
+	public static final String PREFS_NAME = "grayhours";
+
 
 	public static int TODAY_INDEX = CalendarTool.getWeekOfToday()-1;
 	public static int MAX_TOTAL_MINUTES = 0;
@@ -39,6 +43,18 @@ public class AnalysisTool {
 				random.nextInt(24*60));
 		}
 		return map;
+	}
+
+	public static int getSharePreference(Context context, String key){
+		SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+		return settings.getInt(key, 12);
+	}
+
+	public static void setSharePreferenceInt(Context context, String key, int value){
+		SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putInt(key, value);
+		editor.commit();
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.withparadox2.grayhours.ui.analysis;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.*;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -9,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
 import com.withparadox2.grayhours.R;
+import com.withparadox2.grayhours.support.AnalysisTool;
 import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.support.LoadData;
 import com.withparadox2.grayhours.ui.analysis.githubview.GithubView;
@@ -21,6 +23,7 @@ import java.util.Map;
  * Created by withparadox2 on 14-3-3.
  */
 public class LinePlotView extends View {
+	private Context context;
 	private Paint gridPaint;
 	private Paint labelPaint;
 	private Paint dataLinePaint;
@@ -72,8 +75,9 @@ public class LinePlotView extends View {
 		this(context, attrs, 0);
 	}
 
-	public LinePlotView(Context context, AttributeSet attrs, int defStyle) {
+	public LinePlotView(final Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		this.context = context;
 		initialPaint();
 		mScroller = new Scroller(context);
 		gestureDetector = new GestureDetector(context, new MyOnGestureListener());
@@ -89,12 +93,16 @@ public class LinePlotView extends View {
 					} else {
 						changeMaxHours = false;
 					}
+				} else if (event.getAction() == MotionEvent.ACTION_UP && changeMaxHours){
+					AnalysisTool.setSharePreferenceInt(context, String.valueOf(index), maxHours);
 				}
 				return gestureDetector.onTouchEvent(event);
 			}
 		});
 
 	}
+
+
 
 
 	private void initialLength() {
@@ -229,9 +237,10 @@ public class LinePlotView extends View {
 	public void setData(Map map) {
 		this.map = map;
 		dataAvaiable = true;
+		maxHours = AnalysisTool.getSharePreference(context, String.valueOf(index));
 		invalidate();
-	}
 
+	}
 
 	class MyOnGestureListener extends GestureDetector.SimpleOnGestureListener{
 
@@ -270,13 +279,21 @@ public class LinePlotView extends View {
 		int scrollHours = (int)(scrollOffSetY/50f);
 		if(tempMaxHours != scrollHours){
 			if (scrollOffSetY < 0){
-				maxHours = maxHours - 2;
+				if (maxHours == 24) {
+					maxHours = maxHours - 4;
+				} else {
+					maxHours = maxHours - 2;
+				}
 			} else {
-				maxHours = maxHours + 2;
+				if (maxHours == 20) {
+					maxHours = maxHours + 4;
+				} else {
+					maxHours = maxHours + 2;
+				}
 			}
 			tempMaxHours = scrollHours;
 		}
-		if (maxHours >= 22) {
+		if (maxHours > 24) {
 			maxHours = 24;
 		}
 		if (maxHours < 4) {

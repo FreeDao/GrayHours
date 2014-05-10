@@ -7,13 +7,50 @@
               android:layout_marginBottom="10dp"
               android:layout_marginTop="10dp"
 	android:padding="5dp">
+	<RelativeLayout android:layout_width="fill_parent"
+	                android:paddingRight="5dp"
+	                android:paddingLeft="5dp"
+	                android:layout_marginBottom="5dp"
+	                android:layout_height="70dp">
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:id="@+id/total_time"
+		          android:layout_alignParentLeft="true"
+				  style="@style/analysis_text"/>
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:id="@+id/max_time"
+		          android:layout_alignParentRight="true"
+		          android:layout_alignBottom="@id/total_time"
+		          style="@style/analysis_text"/>
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:id="@+id/average_time"
+		          android:layout_alignParentLeft="true"
+		          android:layout_alignParentBottom="true"
+		          style="@style/analysis_text"/>
+
+		<TextView android:layout_width="wrap_content"
+		          android:layout_height="wrap_content"
+		          android:id="@+id/used_days"
+		          android:layout_alignParentRight="true"
+		          android:layout_alignParentBottom="true"
+		          style="@style/analysis_text"/>
+
+	</RelativeLayout>
 	<TextView
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_height="26dp"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginBottom="5dp"
 		android:id="@+id/task_name_text"
 		android:gravity="center_horizontal"
-		android:textColor="@color/github_text"
-		android:textSize="20sp"/>
+		android:background="@drawable/analysis_timetext_backgroud"
+		android:textColor="@color/ghostwhite"
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:text="0000-00-00  00:00"
+		android:textSize="18sp"/>
 	<LinearLayout
 		android:layout_width="fill_parent"
 		android:orientation="horizontal"

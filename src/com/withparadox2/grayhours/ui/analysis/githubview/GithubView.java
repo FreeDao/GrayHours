@@ -102,7 +102,7 @@ public class GithubView extends ViewGroup {
 				columnView.setPosition(-c);
 				addView(columnView);
 			}
-			for (int c=0; c<5; c++){
+			for (int c=0; c<2; c++){
 				columnViewCacheList.offer(new ColumnView(context));
 			}
 			currentColumnPosition = 0;
@@ -114,14 +114,10 @@ public class GithubView extends ViewGroup {
 
 		@Override
 		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-			long starttime, starttime1;
 			mScroller.forceFinished(true);
 			scrollOffSet += distanceX;
-			starttime1 = System.currentTimeMillis();
 			updateView();
 			requestLayout();
-			DebugConfig.log("update view and layout:%d", System.currentTimeMillis()-starttime1);
-
 			return true;
 		}
 
