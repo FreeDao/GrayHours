@@ -112,9 +112,9 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 
 	@Override
 	public void loadFinishedCallback(Map map1) {
-		linePlotView.setData(map1);
-		linePlotView.setIndex(index);
 		map = map1;
+		linePlotView.setIndex(index);
+		linePlotView.setData(map1);
 		githubView.setData();
 		updateInfomationText();
 	}

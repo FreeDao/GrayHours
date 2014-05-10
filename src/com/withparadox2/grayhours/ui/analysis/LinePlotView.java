@@ -239,7 +239,7 @@ public class LinePlotView extends View {
 		dataAvaiable = true;
 		maxHours = AnalysisTool.getSharePreference(context, String.valueOf(index));
 		setIntervalHours(maxHours);
-		DebugConfig.log("maxHour is :%d", maxHours);
+		DebugConfig.log("maxHour is :%d, index is:%d", maxHours, index);
 		invalidate();
 
 	}
