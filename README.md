@@ -6,5 +6,11 @@ Implementation of 10k-hours theory.
 - You are allowed to record more details than the time consumed for a goal.
 - Checking the github-view like graph everyday will force you to fill every blank day.
 
+## screenshots
+![image](https://github.com/withparadox2/grayhours/raw/master/screenshots/Screenshot_2014-05-10-19-12-49.png)
+![image](https://github.com/withparadox2/grayhours/raw/master/screenshots/Screenshot_2014-05-10-19-13-45.png)
+![image](https://github.com/withparadox2/grayhours/raw/master/screenshots/Screenshot_2014-05-10-19-13-19.png)
+![image](https://github.com/withparadox2/grayhours/raw/master/screenshots/Screenshot_2014-05-10-18-55-32.png)
+
 ## Contact
 * withparadox2@gmail.com

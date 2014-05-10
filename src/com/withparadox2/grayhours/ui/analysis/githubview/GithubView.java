@@ -31,7 +31,8 @@ public class GithubView extends ViewGroup {
 	private Scroller mScroller;
 	private Context context;
 	private int currentColumnPosition = 0; //using position to identify each column then each cell
-	public static int currentSelectedCell = 0;
+	public static int cellPosition = 0;
+	public static int cellIndex = 0;
 
 
 	private int addOrMinusScrollOffSet;// the offset from scrollOffSet because of adding or removing view
@@ -133,6 +134,8 @@ public class GithubView extends ViewGroup {
 			int ind = (int)(e.getY()/cellSize);
 			CellView.selectedPositin = pos*7+ind;
 			setDateText(pos, ind);
+			cellPosition = pos;
+			cellIndex = ind;
 			linePlotView.scrollToTargetCell(pos * 7 - ind + AnalysisTool.TODAY_INDEX);
 			invalidateAll();
 			return true;
@@ -227,7 +230,7 @@ public class GithubView extends ViewGroup {
 	public void setData(){
 		dataAvaiable = true;
 		invalidateAll();
-		setDateText(0, AnalysisTool.TODAY_INDEX);
+		setDateText(cellPosition, cellIndex);
 	}
 
 	public void setDateText(int position, int index){
@@ -282,7 +285,8 @@ public class GithubView extends ViewGroup {
 				}
 			}
 		}
-
+		cellIndex = ind;
+		cellPosition = pos;
 		CellView.selectedPositin = pos*7+ind;
 //		DebugConfig.log("currPos:%d, position:%d, num:%d",currentColumnPosition, pos, getChildCount());
 		setDateText(pos, ind);
