@@ -55,6 +55,8 @@ public class GithubView extends ViewGroup {
 		gestureDetector = new GestureDetector(new MyGestureListener());
 		this.setLongClickable(true);
 		mScroller = new Scroller(context);
+		cellIndex = AnalysisTool.TODAY_INDEX;
+		cellPosition = 0;
 		setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {

@@ -22,7 +22,7 @@ public class CellView extends TextView{
 	private int columnPosition, index;
 	private static Paint paint;
 	private int key;
-	public static int selectedPositin=AnalysisTool.TODAY_INDEX;
+	public static int selectedPositin = AnalysisTool.TODAY_INDEX;
 
 
 	public CellView(Context context, final int index) {

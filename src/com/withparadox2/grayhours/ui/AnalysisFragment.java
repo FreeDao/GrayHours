@@ -123,6 +123,10 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 		totalTimeTextView.setText("total time: "+Util.convertSecondsToHoursMinutes(Integer.parseInt(taskBeanList.get(index).getTotalTime())));
 		maxTimeTextView.setText("max time: "+Util.convertSecondsToHoursMinutes(AnalysisTool.MAX_TOTAL_MINUTES*60));
 		usedDaysTextView.setText("used days: "+map.size());
-		averageTimeTextView.setText("average time: "+Util.convertSecondsToHoursMinutes(Integer.parseInt(taskBeanList.get(index).getTotalTime())/map.size()));
+		if(map.size()==0){
+			averageTimeTextView.setText("average time: "+Util.convertSecondsToHoursMinutes(0));
+		} else {
+			averageTimeTextView.setText("average time: "+Util.convertSecondsToHoursMinutes(Integer.parseInt(taskBeanList.get(index).getTotalTime())/map.size()));
+		}
 	}
 }
