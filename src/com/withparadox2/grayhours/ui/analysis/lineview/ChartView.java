@@ -20,10 +20,12 @@ import java.util.Map;
 /**
  * Created by Administrator on 14-7-2.
  */
-public class ChartView extends HorizontalListView{
+public class ChartView extends HorizontalListView implements TimeView.SetMaxTimeCallBack{
 	private Context context;
 	private GestureDetector gestureDetector;
 	private Scroller mScroller;
+	public static int maxTime = 12;
+	public static int timeInterval = 3;
 	public ChartView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		this.context = context;
@@ -31,6 +33,7 @@ public class ChartView extends HorizontalListView{
 		this.setLongClickable(true);
 		mScroller = new Scroller(context);
 		this.setAdapter(new MyAdapter());
+		TimeView.setCallBack(this);
 		addViews();
 		setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -75,6 +78,13 @@ public class ChartView extends HorizontalListView{
 		for(int i=0; i<getChildCount(); i++){
 			getChildAt(i).invalidate();
 		}
+	}
+
+	@Override
+	public void setTime(int maxTime, int timeInterval) {
+		ChartView.maxTime = maxTime;
+		ChartView.timeInterval = timeInterval;
+		updateChildViews();
 	}
 
 	private class MyAdapter extends BaseAdapter {

@@ -10,7 +10,6 @@
 	<RelativeLayout android:layout_width="fill_parent"
 	                android:paddingRight="5dp"
 	                android:paddingLeft="5dp"
-	                android:background="@color/test_color"
 	                android:layout_marginBottom="5dp"
 	                android:layout_height="70dp">
 		<TextView android:layout_width="wrap_content"
@@ -49,6 +48,7 @@
 		android:textColor="@color/ghostwhite"
 		android:paddingLeft="10dp"
 		android:paddingRight="10dp"
+		android:background="@drawable/analysis_timetext_backgroud"
 		android:text="0000-00-00  00:00"
 		android:textSize="18sp"/>
 	<LinearLayout
@@ -59,7 +59,7 @@
 		android:layout_weight="0.8">
 		<include layout="@layout/week_text"/>
 		<com.withparadox2.grayhours.ui.analysis.githubview.GithubView
-			android:layout_marginLeft="3dp"
+
 			android:id="@+id/githubview"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"/>
@@ -69,10 +69,11 @@
 	              android:layout_weight="1"
 		android:orientation="horizontal">
 		<com.withparadox2.grayhours.ui.analysis.lineview.TimeView
-			android:layout_width="5dp"
+			android:id="@+id/timeview"
+			android:layout_width="20dp"
 			android:layout_height="fill_parent"/>
 		<com.withparadox2.grayhours.ui.analysis.lineview.ChartView
-			android:id="@+id/lineplotview"
+			android:id="@+id/chartview_null"
 			android:paddingLeft="5dp"
 			android:paddingRight="5dp"
 			android:paddingTop="50dp"

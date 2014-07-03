@@ -15,7 +15,10 @@ import com.withparadox2.grayhours.support.AnalysisTool;
 import com.withparadox2.grayhours.support.LoadData;
 import com.withparadox2.grayhours.ui.analysis.AnalysisScrollAysn;
 import com.withparadox2.grayhours.ui.analysis.githubview.GithubView;
+import com.withparadox2.grayhours.ui.analysis.lineview.ChartView;
 import com.withparadox2.grayhours.ui.analysis.lineview.LinePlotView;
+import com.withparadox2.grayhours.ui.analysis.lineview.TimeView;
+import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 import java.util.ArrayList;
@@ -26,7 +29,8 @@ import java.util.Map;
  * Created by withparadox2 on 14-3-2.
  */
 public class AnalysisFragment extends Fragment implements ActionBar.OnNavigationListener, LoadData.LoadFinishedCallback{
-	private LinePlotView linePlotView;
+	private ChartView chartView;
+	private TimeView timeView;
 	private GithubView githubView;
 	private TextView textView;
 
@@ -65,8 +69,12 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.analysisfragment_layout, container, false);
+		timeView  = (TimeView) view.findViewById(R.id.timeview);
+		chartView = (ChartView) view.findViewById(R.id.chartview_null);
+
 //		linePlotView = (LinePlotView) view.findViewById(R.id.lineplotview);
 		githubView = (GithubView) view.findViewById(R.id.githubview);
+		DebugConfig.log("GithubView"+(githubView==null));
 		githubView.setUpdateDateTextListener(new GithubView.UpdateDateTextListener() {
 			@Override
 			public void setDateText(String text) {

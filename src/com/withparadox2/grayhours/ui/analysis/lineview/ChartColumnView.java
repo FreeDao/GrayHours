@@ -21,7 +21,7 @@ public class ChartColumnView extends View{
 	public static Paint barPaint;
 	public static int numOfSegments = 8;
 	public static int dateTextHeight = Util.dip2px(20);
-	private static float paddingTop = 10f;
+	private static float paddingTop = 15f;
 	private static float cellHeight;
 	private static int width;
 	private static int height;
@@ -56,7 +56,7 @@ public class ChartColumnView extends View{
 			circlePaint.setColor(getResources().getColor(R.color.red));
 			circlePaint.setAntiAlias(true);
 
-			dateTextPaint.setTextSize(20);
+			dateTextPaint.setTextSize(Util.sp2px(15));
 			dateTextPaint.setColor(getResources().getColor(R.color.red));
 			dateTextPaint.setTextAlign(Paint.Align.CENTER);
 
@@ -74,9 +74,9 @@ public class ChartColumnView extends View{
 	protected void onDraw(Canvas canvas) {
 		width = getMeasuredWidth();
 		height = getMeasuredHeight();
-		cellHeight = (height - dateTextHeight - paddingTop)/Float.valueOf(numOfSegments);
-		//drawLineView(canvas);
-		drawBarView(canvas);
+		cellHeight = (height - dateTextHeight - paddingTop)/Float.valueOf(ChartView.maxTime/ChartView.timeInterval);
+		drawLineView(canvas);
+		//drawBarView(canvas);
 	}
 
 	private void drawLineView(Canvas canvas){
@@ -88,7 +88,7 @@ public class ChartColumnView extends View{
 
 	private void drawBackgroundGrid(Canvas canvas){
 		float y = paddingTop;
-		for (int i=0; i<numOfSegments+1; i++){
+		for (int i=0; i<ChartView.maxTime/ChartView.timeInterval+1; i++){
 			canvas.drawLine(0, y, width, y, backgroundGridPaint);
 			y += cellHeight;
 		}
@@ -107,7 +107,7 @@ public class ChartColumnView extends View{
 	}
 
 	private void drawText(Canvas canvas) {
-		canvas.drawText("02-12", width/2, height-dateTextHeight/2, dateTextPaint);
+		canvas.drawText("12", width/2, height, dateTextPaint);
 	}
 
 	private void drawBarView(Canvas canvas){
@@ -120,7 +120,7 @@ public class ChartColumnView extends View{
 	private float getPointHeight(int position){
 		float height1;
 		try {
-			height1 = (float) AnalysisFragment.map.get(position)*numOfSegments*cellHeight/(24*60);
+			height1 = (float) AnalysisFragment.map.get(position)*cellHeight/(ChartView.timeInterval*60);
 		} catch (NullPointerException e){
 			height1 = 0;
 		}
