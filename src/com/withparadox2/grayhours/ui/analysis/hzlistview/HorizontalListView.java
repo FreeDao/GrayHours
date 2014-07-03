@@ -2,6 +2,7 @@ package com.withparadox2.grayhours.ui.analysis.hzlistview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import com.withparadox2.grayhours.ui.analysis.githubview.GitColumnView;
@@ -13,10 +14,10 @@ import java.util.Queue;
  * Created by Administrator on 14-7-2.
  */
 public class HorizontalListView extends ViewGroup{
-	private BaseAdapter myAdapter;
+	protected BaseAdapter myAdapter;
 	protected int cellSize;
 	protected float addOrMinusScrollOffSet, scrollOffSet;
-	private Queue<ViewGroup> columnViewCacheList = new LinkedList<ViewGroup>();
+	protected Queue<View> columnViewCacheList = new LinkedList<View>();
 	protected int currentColumnPosition = 0;
 	private Context context;
 
@@ -42,7 +43,7 @@ public class HorizontalListView extends ViewGroup{
 	public void updateView(){
 		int num = getChildCount();
 		while (getChildAt(0).getRight() < 0) {
-			columnViewCacheList.offer((ViewGroup) getChildAt(0));
+			columnViewCacheList.offer((View) getChildAt(0));
 
 			removeViewAt(0);
 			num--;
@@ -51,7 +52,7 @@ public class HorizontalListView extends ViewGroup{
 		}
 
 		while (getChildAt(num-1).getLeft() > getWidth()){
-			columnViewCacheList.offer((ViewGroup) getChildAt(num - 1));
+			columnViewCacheList.offer((View) getChildAt(num - 1));
 			removeViewAt(num-1);
 			num--;
 		}

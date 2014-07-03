@@ -65,7 +65,7 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.analysisfragment_layout, container, false);
-		linePlotView = (LinePlotView) view.findViewById(R.id.lineplotview);
+//		linePlotView = (LinePlotView) view.findViewById(R.id.lineplotview);
 		githubView = (GithubView) view.findViewById(R.id.githubview);
 		githubView.setUpdateDateTextListener(new GithubView.UpdateDateTextListener() {
 			@Override
@@ -73,8 +73,8 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 				textView.setText(text);
 			}
 		});
-		githubView.setLinePlotView(linePlotView);
-		linePlotView.setGithubView(githubView);
+//		githubView.setLinePlotView(linePlotView);
+//		linePlotView.setGithubView(githubView);
 		textView = (TextView) view.findViewById(R.id.task_name_text);
 		totalTimeTextView = (TextView) view.findViewById(R.id.total_time);
 		maxTimeTextView = (TextView) view.findViewById(R.id.max_time);
@@ -112,8 +112,8 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 	@Override
 	public void loadFinishedCallback(Map map1) {
 		map = map1;
-		linePlotView.setIndex(index);
-		linePlotView.setData(map1);
+//		linePlotView.setIndex(index);
+//		linePlotView.setData(map1);
 		githubView.setData();
 		updateInfomationText();
 	}
