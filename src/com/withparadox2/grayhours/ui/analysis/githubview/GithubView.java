@@ -1,41 +1,34 @@
 package com.withparadox2.grayhours.ui.analysis.githubview;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.*;
+import android.widget.BaseAdapter;
 import android.widget.Scroller;
 import com.withparadox2.grayhours.support.AnalysisTool;
 import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.ui.AnalysisFragment;
-import com.withparadox2.grayhours.ui.analysis.LinePlotView;
+import com.withparadox2.grayhours.ui.analysis.lineview.LinePlotView;
+import com.withparadox2.grayhours.ui.analysis.hzlistview.HorizontalListView;
 import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
 /**
  * Created by withparadox2 on 14-4-16.
  */
-public class GithubView extends ViewGroup {
-	private int cellSize = 0;
-	private Queue<ColumnView> columnViewCacheList = new LinkedList<ColumnView>();
+public class GithubView extends HorizontalListView {
 	private int maxColumnNum = -1;
-	private ColumnView columnView;
+	private GitColumnView gitColumnView;
 	private GestureDetector gestureDetector;
-	private float scrollOffSet = 0f;
-	private ColumnView convertView;
+	private GitColumnView convertView;
 	private Scroller mScroller;
 	private Context context;
-	private int currentColumnPosition = 0; //using position to identify each column then each cell
 	public static int cellPosition = 0;
 	public static int cellIndex = 0;
 
 
-	private int addOrMinusScrollOffSet;// the offset from scrollOffSet because of adding or removing view
 	private Map<Integer, Integer> map;
 	private boolean dataAvaiable = false;
 
@@ -57,23 +50,14 @@ public class GithubView extends ViewGroup {
 		mScroller = new Scroller(context);
 		cellIndex = AnalysisTool.TODAY_INDEX;
 		cellPosition = 0;
+		this.setAdapter(new MyAdapter());
 		setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				mScroller.forceFinished(true);
-
 				return gestureDetector.onTouchEvent(event);
 			}
 		});
-	}
-
-	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		int height = b - t;
-		for (int c=0, childNum = getChildCount(); c<childNum; c++){
-			int x = (int) (c*cellSize - scrollOffSet - addOrMinusScrollOffSet);
-			getChildAt(c).layout(x, 0, x + cellSize, height);
-		}
 	}
 
 	@Override
@@ -84,32 +68,41 @@ public class GithubView extends ViewGroup {
 		int heightMeasure = cellSize*7;
 		int childWidhtMeasureSpec = MeasureSpec.makeMeasureSpec(cellSize, MeasureSpec.EXACTLY);
 		int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(heightMeasure, MeasureSpec.EXACTLY);
-		initialView(width);
+		initialView(width, cellSize);
+		CellView.selectedPositin = AnalysisTool.TODAY_INDEX;
 		for (int c=0, childNum = getChildCount(); c<childNum; c++){
 			getChildAt(c).measure(childWidhtMeasureSpec, childHeightMeasureSpec);
 		}
 		setMeasuredDimension(width, height);
 	}
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
+	private class MyAdapter extends BaseAdapter{
 
-	}
+		@Override
+		public int getCount() {
+			return 0;
+		}
 
-	private void initialView(int width){
-		if(getChildCount() == 0){
-			int maxColumnNum = width/cellSize + 1;
-			for (int c=0; c<maxColumnNum; c++){
-				columnView = new ColumnView(context);
-				columnView.setPosition(-c);
-				addView(columnView);
+		@Override
+		public Object getItem(int position) {
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			GitColumnView gitColumnView;
+			if (convertView != null){
+				gitColumnView = (GitColumnView) convertView;
+			} else {
+				gitColumnView = new GitColumnView(context);
 			}
-			for (int c=0; c<2; c++){
-				columnViewCacheList.offer(new ColumnView(context));
-			}
-			currentColumnPosition = 0;
-			CellView.selectedPositin = AnalysisTool.TODAY_INDEX;
+			gitColumnView.setPosition(position);
+			return gitColumnView;
 		}
 	}
 
@@ -154,53 +147,6 @@ public class GithubView extends ViewGroup {
 				tempCell.invalidate();
 			}
 		}
-	}
-
-	private void updateView(){
-		int num = getChildCount();
-
-		while (getChildAt(0).getRight() < 0) {
-			columnViewCacheList.offer((ColumnView) getChildAt(0));
-			removeViewAt(0);
-			num--;
-			addOrMinusScrollOffSet -= cellSize;
-			currentColumnPosition--;
-		}
-
-		while (getChildAt(num-1).getLeft() > getWidth()){
-			columnViewCacheList.offer((ColumnView) getChildAt(num - 1));
-			removeViewAt(num-1);
-			num--;
-		}
-
-		// shouldn't use while(getChildAt(0).getLeft()>=0), because getLeft() gives the value of previous time
-		// while here we have computed a new scrollOffSet, so we need to catch up with it by updating addOrMinusScrollOffSet
-		while(- addOrMinusScrollOffSet - scrollOffSet >= 0){
-			convertView = columnViewCacheList.poll();
-			if (convertView == null){
-				convertView = new ColumnView(context);
-			}
-			currentColumnPosition++;
-			convertView.setPosition(currentColumnPosition);
-			addView(convertView, 0);
-			addOrMinusScrollOffSet += cellSize;
-			convertView = null;
-			num++;
-		}
-
-		int temp = (int) (- addOrMinusScrollOffSet - scrollOffSet + num*cellSize);
-		while (temp <= getWidth()){
-			convertView = columnViewCacheList.poll();
-			if (convertView == null){
-				convertView = new ColumnView(context);
-			}
-			convertView.setPosition(currentColumnPosition-num);
-			addView(convertView);
-			temp += cellSize;
-			convertView = null;
-			num++;
-		}
-
 	}
 
 	private void fling(int velocityX, int velocityY) {
@@ -290,7 +236,6 @@ public class GithubView extends ViewGroup {
 		cellIndex = ind;
 		cellPosition = pos;
 		CellView.selectedPositin = pos*7+ind;
-//		DebugConfig.log("currPos:%d, position:%d, num:%d",currentColumnPosition, pos, getChildCount());
 		setDateText(pos, ind);
 		mScroller.forceFinished(true);
 

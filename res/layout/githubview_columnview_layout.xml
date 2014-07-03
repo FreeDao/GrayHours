@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.withparadox2.grayhours.ui.analysis.githubview.ColumnView
+<com.withparadox2.grayhours.ui.analysis.githubview.GitColumnView
 	xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="wrap_content"
@@ -34,4 +34,4 @@
 		android:layout_height="wrap_content"
 		style="@style/cell"/>
 
-</com.withparadox2.grayhours.ui.analysis.githubview.ColumnView>
+</com.withparadox2.grayhours.ui.analysis.githubview.GitColumnView>

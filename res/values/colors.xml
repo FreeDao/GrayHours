@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<color name="test_color">#55FF1493</color>
 
 	<color name="github_level_0">#dedede</color>
 	<color name="github_level_1">#D6E685</color>

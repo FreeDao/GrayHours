@@ -12,11 +12,10 @@ import android.widget.TextView;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.support.AnalysisTool;
-import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.support.LoadData;
 import com.withparadox2.grayhours.ui.analysis.AnalysisScrollAysn;
 import com.withparadox2.grayhours.ui.analysis.githubview.GithubView;
-import com.withparadox2.grayhours.ui.analysis.LinePlotView;
+import com.withparadox2.grayhours.ui.analysis.lineview.LinePlotView;
 import com.withparadox2.grayhours.utils.Util;
 
 import java.util.ArrayList;

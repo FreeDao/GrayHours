@@ -1,7 +1,6 @@
-package com.withparadox2.grayhours.ui.analysis;
+package com.withparadox2.grayhours.ui.analysis.lineview;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.*;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -28,7 +27,7 @@ public class LinePlotView extends View {
 	private Paint labelPaint;
 	private Paint dataLinePaint;
 	private Paint framePaint;
-	private Paint coverColumnPaint;
+	private Paint diskPaint;
 
 	private Scroller mScroller;
 	private int mLabelSeparation;
@@ -52,6 +51,7 @@ public class LinePlotView extends View {
 	private GestureDetector gestureDetector;
 
 	private Rect contentRect = new Rect();
+	private Rect linesAndLabelsRect = new Rect();
 
 
 	private boolean dataAvaiable = false;
@@ -121,7 +121,7 @@ public class LinePlotView extends View {
 		labelPaint = new Paint();
 		dataLinePaint = new Paint();
 		framePaint = new Paint();
-		coverColumnPaint = new Paint();
+		diskPaint = new Paint();
 
 		gridPaint.setColor(getResources().getColor(R.color.grid_line_color));
 		gridPaint.setStyle(Paint.Style.STROKE);
@@ -135,15 +135,16 @@ public class LinePlotView extends View {
 		mLabelWidth = Util.dip2px(18);
 		mLabelSeparation = 2;
 
+		dataLinePaint.setStrokeWidth(3f);
 		dataLinePaint.setColor(getResources().getColor(R.color.data_line_color));
 
 		framePaint.setColor(getResources().getColor(R.color.coral));
 		framePaint.setStyle(Paint.Style.STROKE);
 		framePaint.setStrokeWidth(3f);
 
-		coverColumnPaint.setColor(getResources().getColor(R.color.teal));
-		coverColumnPaint.setAlpha(200);
-		coverColumnPaint.setStyle(Paint.Style.FILL);
+		diskPaint.setColor(getResources().getColor(R.color.teal));
+		diskPaint.setAlpha(200);
+		diskPaint.setStyle(Paint.Style.FILL);
 	}
 
 	@Override
@@ -151,13 +152,12 @@ public class LinePlotView extends View {
 		initialLength();
 
 		drawVerticalLabel(canvas, labelPaint);
-		drawHorizontalLabel(canvas, labelPaint);
-		canvas.drawRect(contentRect, framePaint);
-		canvas.clipRect(contentRect);
+		canvas.clipRect(linesAndLabelsRect);
 		if(dataAvaiable){
-			drawDataLine(canvas, labelPaint);
+			drawDataLine(canvas, dataLinePaint);
 		}
 		drawBackgroundGrid(canvas, gridPaint);
+		drawHorizontalLabel(canvas, labelPaint);
 		canvas.restore();
 	}
 
@@ -169,6 +169,11 @@ public class LinePlotView extends View {
 				getPaddingTop(),
 				getWidth() - getPaddingRight(),
 				getHeight() - mLabelHeight - mLabelSeparation - getPaddingBottom());
+		linesAndLabelsRect.set(
+				mLabelWidth + mLabelSeparation + getPaddingLeft(),
+				getPaddingTop(),
+				getWidth() - getPaddingRight(),
+				getHeight());
 	}
 
 	private void drawBackgroundGrid(Canvas canvas, Paint paint){
@@ -176,12 +181,6 @@ public class LinePlotView extends View {
 		for (int i=0, n=2*maxHours/intervalHours; i<=n; i++){
 			canvas.drawLine(contentRect.left, y, contentRect.right, y, paint);
 			y += cellHeight/2f;
-		}
-		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
-		float x = (float)contentRect.left - scrollOffSetX + cellWidth*scrollCellWidthNum + initiaGridlOffset;
-		for (int i=0; i<=8; i++){
-			canvas.drawLine(x, contentRect.top, x, contentRect.bottom, paint);
-			x += cellWidth;
 		}
 	}
 
@@ -212,7 +211,8 @@ public class LinePlotView extends View {
 		int scrollCellWidthNum = (int)(scrollOffSetX / cellWidth);
 		float x = contentRect.right - scrollOffSetX + cellWidth*(scrollCellWidthNum+1) - initiaGridlOffset;
 		Integer timeOld;
-		float heightNew = contentRect.bottom, heightOld, r;
+		float heightNew = contentRect.bottom, heightOld;
+		int color;
 
 		for (int i=0; i <= 10; i++){
 			timeOld = map.get(4-i + scrollCellWidthNum);
@@ -220,10 +220,14 @@ public class LinePlotView extends View {
 				timeOld = 0;
 			}
 			heightOld = contentRect.bottom - timeOld /intervalHours/60f * cellHeight;
-
-			r = (Math.abs(x-contentRect.centerX()-cellWidth) > cellWidth/2) ? 5 : 10;
-			canvas.drawCircle(x - cellWidth, heightOld, r, coverColumnPaint);
 			canvas.drawLine(x, heightNew, x - cellWidth, heightOld, paint);
+			color = (Math.abs(x-contentRect.centerX()-cellWidth) > cellWidth/2) ?
+					getResources().getColor(R.color.yellow) :
+					getResources().getColor(R.color.pink);
+			diskPaint.setColor(color);
+			canvas.drawCircle(x - cellWidth, heightOld, 10f, diskPaint);
+			diskPaint.setColor(getResources().getColor(R.color.white));
+			canvas.drawCircle(x - cellWidth, heightOld, 5f, diskPaint);
 			heightNew = heightOld;
 			x -= cellWidth;
 		}

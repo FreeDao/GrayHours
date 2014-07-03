@@ -4,25 +4,23 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import com.withparadox2.grayhours.R;
-import com.withparadox2.grayhours.utils.DebugConfig;
 
 /**
  * Created by withparadox2 on 14-4-21.
  */
-public class ColumnView extends ViewGroup{
+public class GitColumnView extends ViewGroup {
 	private int position;
 	private CellView tempView;
 
-	public ColumnView(Context context) {
+	public GitColumnView(Context context) {
 		this(context, null, 0);
 	}
 
-	public ColumnView(Context context, AttributeSet attrs) {
+	public GitColumnView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public ColumnView(Context context, AttributeSet attrs, int defStyle) {
+	public GitColumnView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		addChildViews(context);
 	}
@@ -54,7 +52,6 @@ public class ColumnView extends ViewGroup{
 
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
 		int cellSize = r - l;
 		for (int c = 0, numChildren = getChildCount(); c < numChildren; c++) {
 			final View child = getChildAt(c);
