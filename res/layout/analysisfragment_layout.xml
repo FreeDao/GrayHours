@@ -6,12 +6,12 @@
               android:layout_height="match_parent"
               android:layout_marginBottom="10dp"
               android:layout_marginTop="10dp"
-	android:padding="5dp">
+	          android:padding="5dp">
 	<RelativeLayout android:layout_width="fill_parent"
 	                android:paddingRight="5dp"
 	                android:paddingLeft="5dp"
 	                android:layout_marginBottom="5dp"
-	                android:layout_height="70dp">
+	                android:layout_height="50dp">
 		<TextView android:layout_width="wrap_content"
 		          android:layout_height="wrap_content"
 		          android:id="@+id/total_time"
@@ -54,34 +54,39 @@
 	<LinearLayout
 		android:layout_width="fill_parent"
 		android:orientation="horizontal"
-		android:paddingBottom="20dp"
 		android:layout_height="0dp"
 		android:layout_weight="0.8">
 		<include layout="@layout/week_text"/>
 		<com.withparadox2.grayhours.ui.analysis.githubview.GithubView
-
 			android:id="@+id/githubview"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"/>
 	</LinearLayout>
-	<LinearLayout android:layout_width="fill_parent"
-	              android:layout_height="0dp"
-	              android:layout_weight="1"
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch_analysis"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp"
+        android:textOn="Line"
+        android:textOff="Bar"
+        android:checked="true"
+        android:layout_gravity="right"/>
+	<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+	    android:layout_weight="1"
 		android:orientation="horizontal">
+
 		<com.withparadox2.grayhours.ui.analysis.lineview.TimeView
 			android:id="@+id/timeview"
 			android:layout_width="20dp"
-			android:layout_height="fill_parent"/>
+			android:layout_height="match_parent"/>
 		<com.withparadox2.grayhours.ui.analysis.lineview.ChartView
-			android:id="@+id/chartview_null"
+			android:id="@+id/chartview"
 			android:paddingLeft="5dp"
 			android:paddingRight="5dp"
-			android:paddingTop="50dp"
-			android:paddingBottom="10dp"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"/>
 	</LinearLayout>
-
-
-
 </LinearLayout>

@@ -8,15 +8,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
+
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.bean.TaskBean;
 import com.withparadox2.grayhours.support.AnalysisTool;
 import com.withparadox2.grayhours.support.LoadData;
-import com.withparadox2.grayhours.ui.analysis.AnalysisScrollAysn;
 import com.withparadox2.grayhours.ui.analysis.githubview.GithubView;
+import com.withparadox2.grayhours.ui.analysis.lineview.ChartColumnView;
 import com.withparadox2.grayhours.ui.analysis.lineview.ChartView;
-import com.withparadox2.grayhours.ui.analysis.lineview.LinePlotView;
 import com.withparadox2.grayhours.ui.analysis.lineview.TimeView;
 import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
@@ -35,16 +37,15 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 	private TextView textView;
 
 	private List<TaskBean> taskBeanList;
-	private AnalysisScrollAysn analysisScrollAysn;
 	private boolean initializing = true;
 	private int index;
 	private TextView totalTimeTextView;
 	private TextView maxTimeTextView;
 	private TextView averageTimeTextView;
 	private TextView usedDaysTextView;
+    private Switch mySwitch;
 	public AnalysisFragment(List<TaskBean> taskBeanList, int index){
 		this.taskBeanList = taskBeanList;
-		analysisScrollAysn = new AnalysisScrollAysn();
 		this.index = index;
 	}
 
@@ -70,25 +71,24 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.analysisfragment_layout, container, false);
 		timeView  = (TimeView) view.findViewById(R.id.timeview);
-		chartView = (ChartView) view.findViewById(R.id.chartview_null);
-
-//		linePlotView = (LinePlotView) view.findViewById(R.id.lineplotview);
+        mySwitch = (Switch) view.findViewById(R.id.switch_analysis);
+        mySwitch.setOnCheckedChangeListener(new SwitchChangeListener());
 		githubView = (GithubView) view.findViewById(R.id.githubview);
-		DebugConfig.log("GithubView"+(githubView==null));
-		githubView.setUpdateDateTextListener(new GithubView.UpdateDateTextListener() {
+        chartView  = (ChartView) view.findViewById(R.id.chartview);
+        DebugConfig.log("chartView == null? " + (chartView == null));
+        githubView.setUpdateDateTextListener(new GithubView.UpdateDateTextListener() {
 			@Override
 			public void setDateText(String text) {
 				textView.setText(text);
 			}
 		});
-//		githubView.setLinePlotView(linePlotView);
-//		linePlotView.setGithubView(githubView);
+		githubView.setLinePlotView(chartView);
+		chartView.setGithubView(githubView);
 		textView = (TextView) view.findViewById(R.id.task_name_text);
 		totalTimeTextView = (TextView) view.findViewById(R.id.total_time);
 		maxTimeTextView = (TextView) view.findViewById(R.id.max_time);
 		averageTimeTextView = (TextView) view.findViewById(R.id.average_time);
 		usedDaysTextView = (TextView) view.findViewById(R.id.used_days);
-
 		return view;
 	}
 
@@ -136,4 +136,17 @@ public class AnalysisFragment extends Fragment implements ActionBar.OnNavigation
 			averageTimeTextView.setText("average time: "+Util.convertSecondsToHoursMinutes(Integer.parseInt(taskBeanList.get(index).getTotalTime())/map.size()));
 		}
 	}
+
+    private class SwitchChangeListener implements CompoundButton.OnCheckedChangeListener {
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if(isChecked) {
+                ChartColumnView.setDrawLineBarFlag(true);
+            } else {
+                ChartColumnView.setDrawLineBarFlag(false);
+            }
+            chartView.updateChildViews();
+        }
+    }
 }

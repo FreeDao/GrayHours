@@ -3,16 +3,10 @@ package com.withparadox2.grayhours.ui.analysis.githubview;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.TextView;
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.support.AnalysisTool;
-import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.ui.AnalysisFragment;
-import com.withparadox2.grayhours.utils.DebugConfig;
 
 /**
  * Created by withparadox2 on 14-4-21.

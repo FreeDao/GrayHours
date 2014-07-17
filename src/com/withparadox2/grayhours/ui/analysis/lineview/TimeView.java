@@ -3,15 +3,14 @@ package com.withparadox2.grayhours.ui.analysis.lineview;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Scroller;
+
 import com.withparadox2.grayhours.R;
 import com.withparadox2.grayhours.support.AnalysisTool;
-import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 /**
@@ -42,10 +41,6 @@ public class TimeView extends View{
 		this(context, attrs, 0);
 	}
 
-	public static void setCallBack(SetMaxTimeCallBack callBack1){
-		callBack = callBack1;
-		DebugConfig.log("callback is null?????????????????"+(callBack==null));
-	}
 
 	public TimeView(final Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -68,6 +63,10 @@ public class TimeView extends View{
 			}
 		});
 	}
+
+    public static void setCallBack(SetMaxTimeCallBack callBack1){
+        callBack = callBack1;
+    }
 
 	private void intitial(){
 		drawTimePaint = new Paint();

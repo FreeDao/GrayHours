@@ -2,14 +2,18 @@ package com.withparadox2.grayhours.ui.analysis.githubview;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.*;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Scroller;
+
 import com.withparadox2.grayhours.support.AnalysisTool;
 import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.ui.AnalysisFragment;
-import com.withparadox2.grayhours.ui.analysis.lineview.LinePlotView;
 import com.withparadox2.grayhours.ui.analysis.hzlistview.HorizontalListView;
+import com.withparadox2.grayhours.ui.analysis.lineview.ChartView;
 import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
@@ -32,7 +36,7 @@ public class GithubView extends HorizontalListView {
 	private Map<Integer, Integer> map;
 	private boolean dataAvaiable = false;
 
-	private LinePlotView linePlotView;
+	private ChartView chartView;
 
 	public GithubView(Context context) {
 		this(context, null, 0);
@@ -131,7 +135,7 @@ public class GithubView extends HorizontalListView {
 			setDateText(pos, ind);
 			cellPosition = pos;
 			cellIndex = ind;
-			linePlotView.scrollToTargetCell(pos * 7 - ind + AnalysisTool.TODAY_INDEX);
+			chartView.scrollToTargetCell(pos * 7 - ind + AnalysisTool.TODAY_INDEX);
 			invalidateAll();
 			return true;
 		}
@@ -202,8 +206,8 @@ public class GithubView extends HorizontalListView {
 		this.updateDateTextListener = listener;
 	}
 
-	public void setLinePlotView(LinePlotView linePlotView) {
-		this.linePlotView = linePlotView;
+	public void setLinePlotView(ChartView chartView) {
+		this.chartView = chartView;
 	}
 
 	public void scrollToTarget(int scrollCellsPara){

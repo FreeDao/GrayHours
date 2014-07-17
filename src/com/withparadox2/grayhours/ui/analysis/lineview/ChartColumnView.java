@@ -4,10 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.View;
+
 import com.withparadox2.grayhours.R;
+import com.withparadox2.grayhours.support.CalendarTool;
 import com.withparadox2.grayhours.ui.AnalysisFragment;
-import com.withparadox2.grayhours.ui.analysis.githubview.CellView;
-import com.withparadox2.grayhours.utils.DebugConfig;
 import com.withparadox2.grayhours.utils.Util;
 
 /**
@@ -28,6 +28,7 @@ public class ChartColumnView extends View{
 
 	private int position;
 	private float pointHeight;
+    private static boolean LINE_OR_BAR = true;//true for line, false for bar
 
 	public ChartColumnView(Context context) {
 		super(context);
@@ -48,7 +49,7 @@ public class ChartColumnView extends View{
 			backgroundGridPaint.setColor(getResources().getColor(R.color.lightblue));
 
 			dataLinePaint.setStyle(Paint.Style.STROKE);
-			dataLinePaint.setStrokeWidth(7f);
+			dataLinePaint.setStrokeWidth(5f);
 			dataLinePaint.setColor(getResources().getColor(R.color.red));
 			dataLinePaint.setAntiAlias(true);
 
@@ -70,13 +71,20 @@ public class ChartColumnView extends View{
 		numOfSegments = num;
 	}
 
+    public static void setDrawLineBarFlag(boolean flag) {
+        LINE_OR_BAR = flag;
+    }
+
 	@Override
 	protected void onDraw(Canvas canvas) {
 		width = getMeasuredWidth();
 		height = getMeasuredHeight();
 		cellHeight = (height - dateTextHeight - paddingTop)/Float.valueOf(ChartView.maxTime/ChartView.timeInterval);
-		drawLineView(canvas);
-		//drawBarView(canvas);
+        if (LINE_OR_BAR) {
+            drawLineView(canvas);
+        } else {
+            drawBarView(canvas);
+        }
 	}
 
 	private void drawLineView(Canvas canvas){
@@ -101,26 +109,25 @@ public class ChartColumnView extends View{
 
 	private void drawCircile(Canvas canvas){
 		circlePaint.setColor(getResources().getColor(R.color.red));
-		canvas.drawCircle(width / 2, getPointHeight(position), 15, circlePaint);
+		canvas.drawCircle(width / 2, getPointHeight(position), 12, circlePaint);
 		circlePaint.setColor(getResources().getColor(R.color.white));
-		canvas.drawCircle(width / 2, getPointHeight(position), 6, circlePaint);
+		canvas.drawCircle(width / 2, getPointHeight(position), 5, circlePaint);
 	}
 
 	private void drawText(Canvas canvas) {
-		canvas.drawText("12", width/2, height, dateTextPaint);
+		canvas.drawText(CalendarTool.getDateFromToday(-position).substring(8), width/2, height, dateTextPaint);
 	}
 
 	private void drawBarView(Canvas canvas){
-		int paddingLeftRight = 5;
 		drawBackgroundGrid(canvas);
-		canvas.drawRect(paddingLeftRight, getPointHeight(position), width-paddingLeftRight, height-dateTextHeight, barPaint);
+		canvas.drawRect(width/4, getPointHeight(position), width*3/4, height-dateTextHeight, barPaint);
 		drawText(canvas);
 	}
 
 	private float getPointHeight(int position){
 		float height1;
 		try {
-			height1 = (float) AnalysisFragment.map.get(position)*cellHeight/(ChartView.timeInterval*60);
+			height1 = (float) AnalysisFragment.map.get(-position)*cellHeight/(ChartView.timeInterval*60);
 		} catch (NullPointerException e){
 			height1 = 0;
 		}
